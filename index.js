@@ -1,5 +1,6 @@
 const cool = require('cool-ascii-faces')
 const express = require('express')
+const bodyParser = require("body-parser");
 const path = require('path')
 const PORT = process.env.PORT || 5000
 
@@ -8,10 +9,14 @@ const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: true
 });
-const FileReader = require('filereader')
 
-express()
-.use(express.static(path.join(__dirname, 'public')))
+var app = express()
+//.use(express.static(path.join(__dirname, 'public')))
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+app
 .set('views', path.join(__dirname, 'views'))
 .set('view engine', 'ejs')
 .get('/', (req, res) => res.render('pages/index'))
@@ -29,7 +34,8 @@ express()
       res.send("Error " + err);
     }
   })
-.get('/capstone', (req, res) => res.send(messenger()))
+.get('/capstone', (req, res) => res.sendfile('splash.html'))
+.get('/register', (req, res) => res.sendfile('register.html'))
 .listen(PORT, () => console.log(`Listening on ${ PORT }`))
 
 showTimes = () => {
@@ -41,21 +47,20 @@ showTimes = () => {
   return result;
 }
 
-messenger = () => {
-	return '<!DOCTYPE html>'+
-		'<html>'+
-			'<head>'+
-				'<title>Messaging System</title>'+
-			'</head>'+
 
-			'<body>'+
-				'<center>'+
-					'<h1>Capstone Messagig System</h1>'+
-					'<br/><br/>'+
-					'<a href="..">Register</a>'+
-					'<br/><br/><br/>'+
-					'<a href="..">Login</a>'+
-				'</center>'+
-			'</body>'+
-		'</html>';
-}
+app
+	.post('/register', (req, res) => {
+		var user_name = req.body.user;
+		var password = req.body.password;
+	})
+
+	.post('/login',function(req,res){
+	var user_name=req.body.user;
+	var password=req.body.password;
+	console.log("User name = "+user_name+", password is "+password);
+	res.end("yes");
+});
+
+//app.listen(3000,function(){
+// console.log("Started on PORT 3000");
+//)
