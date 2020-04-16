@@ -37,7 +37,7 @@ app
 .get('/db2', async (req, res) => {
     try {
       const client = await pool.connect()
-      const result = await client.query('SELECT * FROM users_table');
+      const result = await client.query('SELECT * FROM user_table');
       const results = { 'results': (result) ? result.rows : null};
       res.render('pages/db', results );
       client.release();
@@ -71,7 +71,7 @@ app
 			    console.log(1)
 		      const client = await pool.connect()
 			    console.log(2)
-		      const result = await client.query('INSERT into users_table values(user_name, password)');
+		      const result = await client.query('INSERT into user_table values(user_name, password)');
 			    console.log(3)
 		      const results = { 'results': (result) ? result : null};
 			    console.log(4)
