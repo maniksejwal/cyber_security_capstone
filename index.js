@@ -64,7 +64,9 @@ app
 	.post('/register', (req, res) => {
 		console.log(0)
 		var user_name = req.body.user;
+		console.log(0.1)
 		var password = req.body.password;
+		console.log(0.2)
 
 		async (req, res) => {
 		    try {
