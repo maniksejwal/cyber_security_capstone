@@ -50,15 +50,21 @@ showTimes = () => {
 
 app
 	.post('/register', (req, res) => {
+		console.log(0)
 		var user_name = req.body.user;
 		var password = req.body.password;
 
 		async (req, res) => {
 		    try {
+			    console.log(1)
 		      const client = await pool.connect()
+			    console.log(2)
 		      const result = await client.query('INSERT into users_table values(user_name, password)');
+			    console.log(3)
 		      const results = { 'results': (result) ? result : null};
+			    console.log(4)
 		      res.send('<h1>Registration status</h1><br/>' + results);
+			    console.log(5)
 		      client.release();
 		    } catch (err) {
 		      console.error(err);
