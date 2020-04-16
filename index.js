@@ -34,6 +34,18 @@ app
       res.send("Error " + err);
     }
   })
+.get('/db2', async (req, res) => {
+    try {
+      const client = await pool.connect()
+      const result = await client.query('SELECT * FROM users_table');
+      const results = { 'results': (result) ? result.rows : null};
+      res.render('pages/db', results );
+      client.release();
+    } catch (err) {
+      console.error(err);
+      res.send("Error " + err);
+    }
+  })
 .get('/capstone', (req, res) => res.sendfile('splash.html'))
 .get('/register', (req, res) => res.sendfile('register.html'))
 .listen(PORT, () => console.log(`Listening on ${ PORT }`))
