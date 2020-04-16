@@ -2,12 +2,26 @@
 <html>
 	<head>
 		<title>Register</title>
+		<script>
+			function validateForm() {
+			  var x = document.forms["registerForm"]["username"].value;
+			  if (x == "") {
+			    alert("Name must be filled out");
+			    return false;
+			  }
+			  var y = document.forms["registerForm"]["password"].value;
+			  if (y == "") {
+			    alert("Password must be filled out");
+			    return false;
+			  }
+			}
+		</script>
 	</head>
 	<body>
 		<center>
 			<h1>Register</h1>
 			<br/>
-			<form name="registerForm" action="register.js" onsubmit="return validateForm()" method="post">
+			<form name="registerForm" action="/register" onsubmit="return validateForm()" method="post">
 				<label for="username">Username:</label>
 				<br/>
 				<input type="text" id="username" name="username"/>

@@ -52,6 +52,19 @@ app
 	.post('/register', (req, res) => {
 		var user_name = req.body.user;
 		var password = req.body.password;
+
+		async (req, res) => {
+		    try {
+		      const client = await pool.connect()
+		      const result = await client.query('INSERT into users_table values(user_name, password)');
+		      const results = { 'results': (result) ? result : null};
+		      res.send('<h1>Registration status</h1><br/>' + results);
+		      client.release();
+		    } catch (err) {
+		      console.error(err);
+		      res.send("Error " + err);
+		    }
+		}
 	})
 
 	.post('/login',function(req,res){
