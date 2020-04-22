@@ -48,19 +48,7 @@ app
   })
 .get('/capstone', (req, res) => res.sendfile('splash.html'))
 .get('/register', (req, res) => res.sendfile('register.html'))
-.listen(PORT, () => console.log(`Listening on ${ PORT }`))
 
-showTimes = () => {
-  let result = ''
-  const times = process.env.TIMES || 5
-  for (i = 0; i < times; i++) {
-    result += i + ' '
-  }
-  return result;
-}
-
-
-app
 	.post('/register', (req, res) => {
 		console.log(0)
 		var user_name = req.body.user;
@@ -92,8 +80,21 @@ app
 	var password=req.body.password;
 	console.log("User name = "+user_name+", password is "+password);
 	res.end("yes");
-});
+})
+
+.listen(PORT, () => console.log(`Listening on ${ PORT }`))
+
+showTimes = () => {
+  let result = ''
+  const times = process.env.TIMES || 5
+  for (i = 0; i < times; i++) {
+    result += i + ' '
+  }
+  return result;
+}
+
+
 
 //app.listen(3000,function(){
 // console.log("Started on PORT 3000");
-//)
+//})
