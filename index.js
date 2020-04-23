@@ -51,7 +51,7 @@ app
 
 	.post('/register', (req, res) => {
 		console.log(0)
-		var user_name = req.body.user;
+		var user_name = req.body.username;
 		var password = req.body.password;
 		console.log("Log.UserName = " + user_name + "\nLog.passwd = " + password)
 
@@ -60,7 +60,7 @@ app
 			    console.log(1)
 		      const client = await pool.connect()
 			    console.log(2)
-		      const result = await client.query('INSERT into user_table values(' + user_name + ', ' + password + ')');
+		      const result = await client.query('INSERT into user_table values(' + user_name + ', ' + password + ');');
 			    console.log(3)
 		      const results = { 'results': (result) ? result : null};
 			    console.log(4)
