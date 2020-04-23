@@ -52,11 +52,10 @@ app
 	.post('/register', (req, res) => {
 		console.log(0)
 		var user_name = req.body.user;
-		console.log(0.1)
 		var password = req.body.password;
-		console.log(0.2)
+		console.log("Log.UserName = " + user_name + "\nLog.passwd = " + password)
 
-		async (req, res) => {
+		async function f(req, res) {
 		    try {
 			    console.log(1)
 		      const client = await pool.connect()
@@ -73,6 +72,9 @@ app
 		      res.send("Error " + err);
 		    }
 		}
+		console.log(5)
+		f();
+		console.log(6)
 	})
 
 	.post('/login',function(req,res){
