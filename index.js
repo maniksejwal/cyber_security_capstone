@@ -60,7 +60,7 @@ app
 			    console.log(1)
 		      const client = await pool.connect()
 			    console.log(2)
-		      const result = await client.query('INSERT into user_table values(' + user_name + ', ' + password + ');');
+		      const result = await client.query('INSERT into user_table values("' + user_name + '", "' + password + '");');
 			    console.log(3)
 		      const results = { 'results': (result) ? result : null};
 			    console.log(4)
