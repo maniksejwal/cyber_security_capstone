@@ -55,7 +55,7 @@ app
 		var password = req.body.password;
 		console.log("Log.UserName = " + user_name + "\nLog.passwd = " + password)
 
-		async function f(req, res) {
+		async function f(res) {
 		    try {
 			    console.log(1)
 		      const client = await pool.connect()
@@ -72,9 +72,9 @@ app
 		      res.send("Error " + err);
 		    }
 		}
-		console.log(5)
-		f();
 		console.log(6)
+		f(res);
+		console.log(7)
 	})
 
 	.post('/login',function(req,res){
