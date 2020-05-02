@@ -48,6 +48,7 @@ app
   })
 .get('/capstone', (req, res) => res.sendfile('splash.html'))
 .get('/register', (req, res) => res.sendfile('register.html'))
+.get('/login', (req, res) => res.sendfile('login.html'))
 
 	.post('/register', (req, res) => {
 		console.log(0)
@@ -64,7 +65,7 @@ app
 			    console.log(3)
 		      const results = { 'results': (result) ? result : null};
 			    console.log(4)
-		      res.send('<h1>Registration successful</h1><br/><br/> <a href="">Login</a>');
+		      res.send('<h1>Registration successful</h1><br/><br/> <a href="/login">Login</a>');
 			    console.log(5)
 		      client.release();
 		    } catch (err) {
@@ -77,12 +78,32 @@ app
 		console.log(7)
 	})
 
-	.post('/login',function(req,res){
-	var user_name=req.body.user;
-	var password=req.body.password;
-	console.log("User name = "+user_name+", password is "+password);
-	res.end("yes");
-})
+	.post('/login', (req,res) => {
+		var user_name=req.body.user;
+		var password=req.body.password;
+		console.log("User name = "+user_name+", password is "+password);
+		async function f(res) {
+                    try {
+                            console.log(1)
+                      const client = await pool.connect()
+                            console.log(2)
+                      const result = await client.query("SELECT * from user_table where username='" + user_name + "' and password='" + password + "';");
+			    console.log(result)
+                            console.log(3)
+                      const results = { 'results': (result) ? result : null};
+                            console.log(4)
+                      res.send('<h1>Registration successful</h1><br/><br/> <a href="/login">Login</a>');
+                            console.log(5)
+                      client.release();
+                    } catch (err) {
+                      console.error(err);
+                      res.send("Error " + err);
+                    }
+                }
+                console.log(6)
+                f(res);
+                console.log(7)
+	})
 
 .listen(PORT, () => console.log(`Listening on ${ PORT }`))
 
