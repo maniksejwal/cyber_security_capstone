@@ -87,12 +87,27 @@ app
                             console.log(1)
                       const client = await pool.connect()
                             console.log(2)
-                      const result = await client.query("SELECT * from user_table where username='" + user_name + "' and password='" + password + "';");
-			    console.log(result)
+                      const result = await client.query("SELECT * from user_table where username='" + user_name + "';";// and password='" + password + "';");
                             console.log(3)
+			    console.log(result)
+
+			    // messages = 
+			    // console.log(3.1)
+			    // console.log(messages)
+			    // messages_html = ""
+			    // for (i=0; i<messages.length; i++) 
+			    //     messages_html += '<a href="' + messages[i] + '">Message from ' + sender + '</a>';
+			    // console.log(3.2)
+			    // console.log(messages_html)
+			    // console.log(3.3)
+
                       const results = { 'results': (result) ? result : null};
                             console.log(4)
-                      res.send('<h1>Registration successful</h1><br/><br/> <a href="/login">Login</a>');
+                      res.send('<h1>Logged in<h1><br/><br/>' +
+			      '<a href="/new_message">Send a new message</a><br/><br/>' +
+			      '<h3>Your messages</h3>' + 
+			      messages_html
+		      );
                             console.log(5)
                       client.release();
                     } catch (err) {
