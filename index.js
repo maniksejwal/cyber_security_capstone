@@ -64,9 +64,7 @@ app
 			    console.log(3)
 		      const results = { 'results': (result) ? result : null};
 			    console.log(4)
-			    console.log(result)
-			    console.log(result.command)
-		      //res.send('<h1>Registration status</h1><br/>' + JSON.parse(result));
+		      res.send('<h1>Registration successful</h1><br/><br/> <a href="">Login</a>');
 			    console.log(5)
 		      client.release();
 		    } catch (err) {
