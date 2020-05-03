@@ -87,7 +87,10 @@ app
                             console.log(1)
                       const client = await pool.connect()
                             console.log(2)
-                      const result = await client.query("SELECT * from user_table where username='" + user_name + "';");// and password='" + password + "';");
+			    query = "SELECT * from user_table where username='" + user_name + "';";// and password='" + password + "';"
+			    console.log(query)
+			    console.log(2.5)
+                      const result = await client.query(query);
                             console.log(3)
 			    console.log(result)
 
