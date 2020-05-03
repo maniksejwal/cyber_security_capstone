@@ -79,7 +79,7 @@ app
 	})
 
 	.post('/login', (req,res) => {
-		var user_name=req.body.user;
+		var user_name=req.body.username;
 		var password=req.body.password;
 		console.log("User name = "+user_name+", password is "+password);
 		async function f(res) {
@@ -87,9 +87,10 @@ app
                             console.log(1)
                       const client = await pool.connect()
                             console.log(2)
-			    query = "SELECT * from user_table where username='" + user_name + "';";// and password='" + password + "';"
+			    query = "SELECT * from user_table where username='" + user_name + "' and password='" + password + "';"
 			    console.log(query)
 			    console.log(2.5)
+
                       const result = await client.query(query);
                             console.log(3)
 			    console.log(result)
