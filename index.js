@@ -105,8 +105,8 @@ app
                             console.log(4)
                       res.send('<h1>Logged in<h1><br/><br/>' +
 			      '<a href="/new_message">Send a new message</a><br/><br/>' +
-			      '<h3>Your messages</h3>' + 
-			      messages_html
+			      '<h3>Your messages</h3>' //+ 
+			      // messages_html
 		      );
                             console.log(5)
                       client.release();
