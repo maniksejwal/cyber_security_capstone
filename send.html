@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+	<html>
+		<head>
+		<title>Send message</title>
+		<script>
+			function validateForm() {
+			  var x = document.forms["registerForm"]["username"].value;
+			  if (x == "") {
+			    alert("Please enter the receiver's username");
+			    return false;
+			  }
+			  var y = document.forms["registerForm"]["password"].value;
+			  if (y == "") {
+			    alert("Please enter the content");
+			    return false;
+			  }
+			}
+		</script>
+	</head>
+	<body>
+		<center>
+			<h1>SEND</h1>
+			<br/>
+			<form name="messageForm" action="/message"  onsubmit="return validateForm()" method="POST">
+				<label for="username">To (username):</label>
+				<br/>
+				<input type="text" id="username" name="username"/>
+				<br/>
+				<br/>
+				<label for="password">Content:</label>
+				<br/>
+				<input type="text" id="content" name="content"/>
+				<br/>
+				<br/>
+				<input type="submit" id="submit" name="submit" value="Send"/>
+			</form>
+		</center>
+	</body>
+</html>

@@ -49,6 +49,7 @@ app
 .get('/capstone', (req, res) => res.sendfile('splash.html'))
 .get('/register', (req, res) => res.sendfile('register.html'))
 .get('/login', (req, res) => res.sendfile('login.html'))
+.get('/send', (req, res) => res.sendfile('send.html'))
 
 	.post('/register', (req, res) => {
 		console.log(0)
@@ -81,42 +82,12 @@ app
 	.post('/login', (req,res) => {
 		var user_name=req.body.username;
 		var password=req.body.password;
-		console.log("User name = "+user_name+", password is "+password);
 		async function f(res) {
                     try {
-                            console.log(1)
-                      const client = await pool.connect()
-                            console.log(2)
-			    query = "SELECT * from user_table where username='" + user_name + "' and password='" + password + "';"
-			    console.log(query)
-			    console.log(2.5)
-
-                      const result = await client.query(query);
-                            console.log(3)
-			    console.log(result)
-
-			    // messages = 
-			    // console.log(3.1)
-			    // console.log(messages)
-			    // messages_html = ""
-			    // for (i=0; i<messages.length; i++) 
-			    //     messages_html += '<a href="' + messages[i] + '">Message from ' + sender + '</a>';
-			    // console.log(3.2)
-			    // console.log(messages_html)
-			    // console.log(3.3)
-
-                      const results = { 'results': (result) ? result : null};
-                            console.log(4)
-                      res.send('<h1>Logged in<h1><br/><br/>' +
-			      '<a href="/new_message">Send a new message</a><br/><br/>' +
-			      '<h3>Your messages</h3>' //+ 
-			      // messages_html
-		      );
-                            console.log(5)
-                      client.release();
+			    home(res, user_name, password)
                     } catch (err) {
-                      console.error(err);
-                      res.send("Error " + err);
+			    console.error(err);
+			    res.send("Error " + err);
                     }
                 }
                 console.log(6)
@@ -135,6 +106,33 @@ showTimes = () => {
   return result;
 }
 
+function home(){
+	const client = await pool.connect()
+	query = "SELECT * from user_table where username='" + user_name + "' and password='" + password + "';"
+        console.log(query)
+
+	const result = await client.query(query);
+	console.log(result)
+	user = result.rows[0].username;
+
+	message_query = "SELECT Sender FROM Messages WHERE Receiver='" + user + "';"
+
+	message_result = await client.query(message_query);
+	messages = message_result.rows;
+
+	messages_html = ""
+	for (i=0; i<messages.length; i++) 
+		messages_html += '<a href="/message?' + messages[i].messageid + '">Message from ' + sender + '</a>';
+
+      //const results = { 'results': (result) ? result : null};
+      res.send('Logged in<center><h1>Message Center<h1></center><br/><br/>' +
+	      '<a href="/new_message">Send a new message</a><br/><br/>' +
+	      '<h3>Your messages</h3>' +
+	      messages_html
+      );
+	    console.log(5)
+      client.release();
+}
 
 
 //app.listen(3000,function(){
