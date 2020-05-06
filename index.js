@@ -106,7 +106,7 @@ showTimes = () => {
   return result;
 }
 
-async function home(){
+async function home(res, user_name, password){
 	const client = await pool.connect()
 	query = "SELECT * from user_table where username='" + user_name + "' and password='" + password + "';"
         console.log(query)
