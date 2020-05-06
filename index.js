@@ -7,7 +7,7 @@ const PORT = process.env.PORT || 5000
 const { Pool } = require('pg');
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  //ssl: true
+  ssl: true
 });
 
 var app = express()
@@ -66,7 +66,7 @@ app
 			const message = await client.query(query);
 			console.log('message = ' + message)
 
-			res.render('message.ejs', {sender:message.sender, receiver:message.receiver, content:message.message})
+			res.render('pages/message.ejs', {sender:message.sender, receiver:message.receiver, content:message.message})
 		        client.release();
 		} catch (err) {
 		        console.error(err);
