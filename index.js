@@ -56,22 +56,16 @@ app
 	res.render('pages/send.ejs', {user: user})
 })
 .get('/message', (req, res) => {
-	sender = req.query.sender
-	receiver = req.query.receiver
 	messageid = req.query.messageid
-	console.log(0)
 
 	async function f() {
 		try {
-			console.log(1)
 			const client = await pool.connect()
-			console.log(2)
 			query = `SELECT message from Messages where messageid='${messageid};` 
-			console.log(3)
 			const message = await client.query(query);
-			console.log(message)
+			console.log('message = ' + message)
 
-			res.render('message.ejs', {sender:sender, receiver:receiver, content:message})
+			res.render('message.ejs', {sender:message.sender, receiver:message.receiver, content:message.message})
 		        client.release();
 		} catch (err) {
 		        console.error(err);
@@ -153,7 +147,7 @@ showTimes = () => {
 
 async function home(res, user_name, password){
 	const client = await pool.connect()
-	query = "SELECT * from user_table where username='" + user_name + "' and password='" + password + "';"
+	query = `SELECT * from user_table where username='${user_name}' and password='${password}';`
         console.log(query)
 
 	const result = await client.query(query);
@@ -167,7 +161,7 @@ async function home(res, user_name, password){
 
 	messages_html = ""
 	for (i=0; i<messages.length; i++) 
-		messages_html += `<a href="/message?${messages[i].messageid}">Message from ${messages[i].sender}</a>`;
+		messages_html += `<a href="/message?messageid=${messages[i].messageid}">Message from ${messages[i].sender}</a>`;
 
       //const results = { 'results': (result) ? result : null};
       res.send(`<center><h1>Message Center<h1></center><br/><br/>\
