@@ -1,6 +1,6 @@
 const cool = require('cool-ascii-faces')
 const express = require('express')
-const bodyParser = require("body-parser");
+const bodyParser = require('body-parser');
 const path = require('path')
 const PORT = process.env.PORT || 5000
 
@@ -15,6 +15,7 @@ var app = express()
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.set('view engine', 'ejs');
 
 app
 .set('views', path.join(__dirname, 'views'))
@@ -49,7 +50,30 @@ app
 .get('/capstone', (req, res) => res.sendfile('splash.html'))
 .get('/register', (req, res) => res.sendfile('register.html'))
 .get('/login', (req, res) => res.sendfile('login.html'))
-.get('/send', (req, res) => res.sendfile('send.html'))
+.get('/send', (req, res) => {
+	user = req.query.user
+	console.log(user)
+	res.render('pages/send.ejs', {user: user})
+})
+.get('/message', (req, res) => {
+	sender = req.query.sender
+	receiver = req.query.receiver
+	messageid = req.query.messageid
+
+	const client = await pool.connect()
+	query = `SELECT message from Messages where messageid='${messageid};` 
+
+	const message = await client.query(query);
+	console.log(message)
+
+	// messages_html = ""
+	// for (i=0; i<messages.length; i++) 
+		// messages_html += `<a href="/message?${messages[i].messageid}">Message from ${messages[i].sender}</a>`;
+
+
+
+	res.render('message.ejs', {sender:sender, receiver=receiver, content=message})
+})
 
 	.post('/register', (req, res) => {
 		console.log(0)
