@@ -61,7 +61,7 @@ app
 	async function f() {
 		try {
 			const client = await pool.connect()
-			query = `SELECT message from Messages WHERE messageid='${messageid};` 
+			query = `SELECT message from Messages WHERE messageid='${messageid}';` 
 			console.log('query = ' + query)
 			const message = await client.query(query);
 			console.log('message = ' + message)
