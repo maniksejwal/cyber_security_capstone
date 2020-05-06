@@ -120,7 +120,7 @@ async function home(res, user_name, password){
 	message_result = await client.query(message_query);
 	messages = message_result.rows;
 
-	console.log('messge = ' + message)
+	console.log('messge = ' + messages[0])
 
 	messages_html = ""
 	for (i=0; i<messages.length; i++) 
