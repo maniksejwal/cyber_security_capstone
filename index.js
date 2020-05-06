@@ -165,7 +165,7 @@ async function home(res, user_name, password){
 
       //const results = { 'results': (result) ? result : null};
       res.send(`<center><h1>Message Center<h1></center><br/><br/>\
-	      <a href="/send?${user}">Send a new message</a><br/><br/>\
+	      <a href="/send?user=${user}">Send a new message</a><br/><br/>\
 	      <h3>Your messages</h3>\
 	      ${messages_html}`
       );
