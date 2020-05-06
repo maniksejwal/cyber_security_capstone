@@ -59,12 +59,15 @@ app
 	sender = req.query.sender
 	receiver = req.query.receiver
 	messageid = req.query.messageid
+	console.log(0)
 
 	async function f() {
 		try {
+			console.log(1)
 			const client = await pool.connect()
+			console.log(2)
 			query = `SELECT message from Messages where messageid='${messageid};` 
-
+			console.log(3)
 			const message = await client.query(query);
 			console.log(message)
 
@@ -86,24 +89,17 @@ app
 
 		async function f(res) {
 		    try {
-			    console.log(1)
 		      const client = await pool.connect()
-			    console.log(2)
 		      const result = await client.query("INSERT into user_table values('" + user_name + "', '" + password + "');");
-			    console.log(3)
 		      const results = { 'results': (result) ? result : null};
-			    console.log(4)
 		      res.send('<h1>Registration successful</h1><br/><br/> <a href="/login">Login</a>');
-			    console.log(5)
 		      client.release();
 		    } catch (err) {
 		      console.error(err);
 		      res.send("Error " + err);
 		    }
 		}
-		console.log(6)
 		f(res);
-		console.log(7)
 	})
 
 	.post('/login', (req,res) => {
@@ -121,6 +117,11 @@ app
                 f(res);
                 console.log(7)
 	})
+
+	.post('send', (req, res) => {
+		// TODO
+		console.log(TODO)
+	}
 
 .listen(PORT, () => console.log(`Listening on ${ PORT }`))
 
