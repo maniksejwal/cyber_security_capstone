@@ -126,7 +126,7 @@ app
 		async function f() {
 		    try {
 		      const client = await pool.connect()
-		      query = `INSERT into Messages values('${sender}, ${receiver}, ${content}, ${parseInt(Math.random()*100)}');`
+		      query = `INSERT into Messages values('${sender}', '${receiver}', '${content}', '${parseInt(Math.random()*100)}');`
 		      console.log(query)
 		      const result = await client.query(query);
 		      const results = { 'results': (result) ? result : null};
