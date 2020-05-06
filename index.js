@@ -84,7 +84,7 @@ app
 		var password=req.body.password;
 		async function f(res) {
                     try {
-			    home(res, user_name, password)
+			    await home(res, user_name, password)
                     } catch (err) {
 			    console.error(err);
 			    res.send("Error " + err);
