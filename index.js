@@ -60,19 +60,22 @@ app
 	receiver = req.query.receiver
 	messageid = req.query.messageid
 
-	const client = await pool.connect()
-	query = `SELECT message from Messages where messageid='${messageid};` 
+	async function f() {
+		try {
+			const client = await pool.connect()
+			query = `SELECT message from Messages where messageid='${messageid};` 
 
-	const message = await client.query(query);
-	console.log(message)
+			const message = await client.query(query);
+			console.log(message)
 
-	// messages_html = ""
-	// for (i=0; i<messages.length; i++) 
-		// messages_html += `<a href="/message?${messages[i].messageid}">Message from ${messages[i].sender}</a>`;
-
-
-
-	res.render('message.ejs', {sender:sender, receiver=receiver, content=message})
+			res.render('message.ejs', {sender:sender, receiver:receiver, content:message})
+		        client.release();
+		    } catch (err) {
+		        console.error(err);
+		        res.send("Error " + err);
+		    }
+		f()
+	}
 })
 
 	.post('/register', (req, res) => {
