@@ -119,9 +119,25 @@ app
 	})
 
 	.post('send', (req, res) => {
-		// TODO
-		console.log(TODO)
-	}
+		sender = req.query.user;
+		receiver = req.body.username;
+		content = req.body.content;
+
+		async function f() {
+		    try {
+		      const client = await pool.connect()
+		      const result = await client.query(`INSERT into Messages values('\
+		      ${sender}, ${receiver}, ${content}, ${parseInt(Math.random()*10000)}');`);
+		      const results = { 'results': (result) ? result : null};
+		      res.send('<h1>Message sent</h1><br/><br/> <a href="/home">Home</a>');
+		      client.release();
+		    } catch (err) {
+		      console.error(err);
+		      res.send("Error " + err);
+		    }
+		}
+		f();
+	})
 
 .listen(PORT, () => console.log(`Listening on ${ PORT }`))
 

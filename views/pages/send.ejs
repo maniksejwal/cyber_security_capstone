@@ -21,7 +21,7 @@
 		<center>
 			<h1>SEND</h1>
 			<br/>
-			<form name="messageForm" action="/message?<%=user%>"  onsubmet="return validateForm()" method="POST">
+			<form name="messageForm" action="/message?user=<%=user%>"  onsubmet="return validateForm()" method="POST">
 				<label for="username">To (username):</label>
 				<br/>
 				<input type="text" id="username" name="username"/>
