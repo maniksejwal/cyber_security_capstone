@@ -15,7 +15,7 @@ var app = express()
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.set('view engine', 'ejs');
+//app.set('view engine', 'ejs');
 
 app
 .set('views', path.join(__dirname, 'views'))
@@ -53,7 +53,7 @@ app
 .get('/send', (req, res) => {
 	user = req.query.user
 	console.log(user)
-	res.render('pages/send.ejs', {user: user})
+	res.render('pages/send', {user: user})
 })
 .get('/message', (req, res) => {
 	messageid = req.query.messageid
@@ -64,9 +64,10 @@ app
 			query = `SELECT message from Messages WHERE messageid='${messageid}';` 
 			console.log('query = ' + query)
 			const message = await client.query(query);
-			console.log('message = ' + message)
+			console.log('message = ' + JSON.stringify(message))
+			message = message.rows[0]
 
-			res.render('pages/message.ejs', {sender:message.sender, receiver:message.receiver, content:message.message})
+			res.render('pages/message', {sender:message.sender, receiver:message.receiver, content:message.message})
 		        client.release();
 		} catch (err) {
 		        console.error(err);
@@ -108,9 +109,7 @@ app
 			    res.send("Error " + err);
                     }
                 }
-                console.log(6)
                 f(res);
-                console.log(7)
 	})
 
 	.post('/send', (req, res) => {
