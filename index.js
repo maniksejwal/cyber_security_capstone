@@ -130,7 +130,7 @@ app
 		      console.log(query)
 		      const result = await client.query(query);
 		      const results = { 'results': (result) ? result : null};
-		      res.send('<h1>Message sent</h1><br/><br/> <a href="/home">Home</a>');
+		      res.send('<h1>Message sent</h1><br/><br/><a href="/home">Home</a>');
 		      client.release();
 		    } catch (err) {
 		      console.error(err);

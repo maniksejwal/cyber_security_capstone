@@ -4,12 +4,12 @@
 		<title>Send message</title>
 		<script>
 			function validateForm() {
-			  var x = document.forms["registerForm"]["username"].value;
+			  var x = document.forms["newMessageForm"]["username"].value;
 			  if (x == "") {
 			    alert("Please enter the receiver's username");
 			    return false;
 			  }
-			  var y = document.forms["registerForm"]["content"].value;
+			  var y = document.forms["newMessageForm"]["content"].value;
 			  if (y == "") {
 			    alert("Please enter the content");
 			    return false;
@@ -22,7 +22,7 @@
 		<center>
 			<h1>SEND</h1>
 			<br/>
-			<form name="messageForm" action="/send?user=<%=user%>"  onsubmit="return validateForm()" method="POST">
+			<form name="newMessageForm" action="/send?user=<%=user%>"  onsubmit="return validateForm()" method="POST">
 				<label for="username">To (username):</label>
 				<br/>
 				<input type="text" id="username" name="username"/>
