@@ -73,12 +73,12 @@ app
 
 			res.render('message.ejs', {sender:sender, receiver:receiver, content:message})
 		        client.release();
-		    } catch (err) {
+		} catch (err) {
 		        console.error(err);
 		        res.send("Error " + err);
-		    }
-		f()
+		}
 	}
+	f()
 })
 
 	.post('/register', (req, res) => {
