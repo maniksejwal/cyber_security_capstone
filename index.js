@@ -119,12 +119,12 @@ async function home(res, user_name, password){
 
 	message_result = await client.query(message_query);
 	messages = message_result.rows;
-
-	console.log('messge = ' + JSON.stringify(messages[0]))
+	console.log(JSON.stringify(messages))
 
 	messages_html = ""
 	for (i=0; i<messages.length; i++) 
-		messages_html += `<a href="/message?${messages[i].messageid}">Message from ${messages[i].sender}</a>`;
+		messages_html += `<a href="/message?${messages.messageid}">Message from ${messages[i].sender}</a>`;
+		//messages_html += `<a href="/message?${messages[i].messageid}">Message from ${messages[i].sender}</a>`;
 
       //const results = { 'results': (result) ? result : null};
       res.send(`<center><h1>Message Center<h1></center><br/><br/>\
