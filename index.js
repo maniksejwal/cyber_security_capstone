@@ -127,7 +127,7 @@ app
 		    try {
 		      const client = await pool.connect()
 		      const result = await client.query(`INSERT into Messages values('\
-		      ${sender}, ${receiver}, ${content}, ${parseInt(Math.random()*10000)}');`);
+		      ${sender}, ${receiver}, ${content}, ${parseInt(Math.random()*100)}');`);
 		      const results = { 'results': (result) ? result : null};
 		      res.send('<h1>Message sent</h1><br/><br/> <a href="/home">Home</a>');
 		      client.release();
