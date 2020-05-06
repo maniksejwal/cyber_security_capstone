@@ -118,7 +118,7 @@ app
                 console.log(7)
 	})
 
-	.post('send', (req, res) => {
+	.post('/send', (req, res) => {
 		sender = req.query.user;
 		receiver = req.body.username;
 		content = req.body.content;
