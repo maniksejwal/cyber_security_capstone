@@ -122,7 +122,7 @@ async function home(res, user_name, password){
 
 	messages_html = ""
 	for (i=0; i<messages.length; i++) 
-		messages_html += '<a href="/message?' + messages[i].messageid + '">Message from ' + sender + '</a>';
+		messages_html += '<a href="/message?' + messages[i].messageid + '">Message from ' + messages[i].sender + '</a>';
 
       //const results = { 'results': (result) ? result : null};
       res.send('Logged in<center><h1>Message Center<h1></center><br/><br/>' +
