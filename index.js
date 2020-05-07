@@ -47,6 +47,7 @@ app
       res.send("Error " + err);
     }
   })
+
 .get('/capstone', (req, res) => res.sendfile('splash.html'))
 .get('/register', (req, res) => res.sendfile('register.html'))
 .get('/login', (req, res) => res.sendfile('login.html'))
@@ -55,6 +56,7 @@ app
 	console.log(user)
 	res.render('pages/send', {user: user})
 })
+
 .get('/message', (req, res) => {
 	messageid = req.query.messageid
 
@@ -76,6 +78,8 @@ app
 	}
 	f()
 })
+
+.get('/dbdump', (req, res) => res.download('latest.dump'))
 
 	.post('/register', (req, res) => {
 		console.log(0)
