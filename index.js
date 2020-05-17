@@ -52,7 +52,7 @@ app
 .get('/db', async (req, res) => {
     try {
       const client = await pool.connect()
-      const result = await client.query('SELECT * FROM test_table');
+      const result = await client.query('SELECT * FROM test_table;');
       const results = { 'results': (result) ? result.rows : null};
       res.render('pages/db', results );
       client.release();
@@ -64,7 +64,7 @@ app
 .get('/db2', async (req, res) => {
     try {
       const client = await pool.connect()
-      const result = await client.query('SELECT * FROM user_table');
+      const result = await client.query('SELECT * FROM user_table;');
       const results = { 'results': (result) ? result.rows : null};
       res.render('pages/db', results );
       client.release();
@@ -75,7 +75,7 @@ app
   })
 
 .get('/capstone', (req, res) => res.sendfile('splash.html'))
-.get('/register', csrfProtection, (req, res) => res.render('register.ejs', { csrfToken: req.csrfToken() }))
+.get('/register', csrfProtection, (req, res) => res.render('register.ejs'))
 .get('/login', (req, res) => res.sendfile('login.html'))		// TODO max number of attempts
 .get('/send', (req, res) => {
 	user = req.query.user
@@ -90,7 +90,7 @@ app
 		try {
 			const client = await pool.connect()
 			//query_text = `SELECT * from Messages WHERE messageid='${messageid}';` 
-			query_text = 'SELECT * from Messages WHERE messageid=messageid;
+			query_text = 'SELECT * from Messages WHERE messageid=messageid;'
 			values = [messageid] 
 			message = await client.query(query, values);
 			console.log('message = ' + JSON.stringify(message))
@@ -185,16 +185,17 @@ showTimes = () => {
 async function home(res, user_name, password){
 	const client = await pool.connect()
 	password_hash = sha3(password)
-	query = `SELECT * from user_table where username='${user_name}' and password='${password_hash}';`
-        console.log(query)
+	query = 'SELECT * from user_table where username=user_name and password=password_hash;'
+	values = [user_name, password_hash]
 
-	const result = await client.query(query);
+	const result = await client.query(query, values);
 	console.log(result)
 	user = result.rows[0].username;
 
-	message_query = `SELECT * FROM Messages WHERE Receiver='${user}';`
+	message_query = 'SELECT * FROM Messages WHERE Receiver=user;'
+	values = [user]
 
-	message_result = await client.query(message_query);
+	message_result = await client.query(message_query, values);
 	messages = message_result.rows;
 
 	messages_html = ""
