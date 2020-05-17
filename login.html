@@ -4,13 +4,16 @@
 		<title>Login</title>
 		<script>
 			function validateForm() {
-			  var x = document.forms["registerForm"]["username"].value;
-			  if (x == "") {
+			  var username = document.forms["loginForm"]["username"].value;
+			  var password = document.forms["loginForm"]["password"].value;
+				var hidden=document.getElementById('hidden').value;
+
+			  if (username == "") {
 			    alert("Please ender the username");
 			    return false;
 			  }
-			  var y = document.forms["registerForm"]["password"].value;
-			  if (y == "") {
+
+			  if (password == "") {
 			    alert("Please enter the password");
 			    return false;
 			  }
@@ -29,12 +32,14 @@
 				<br/>
 				<label for="password">Password:</label>
 				<br/>
-				<input type="text" id="password" name="password"/>
+				<input type="password" id="password" name="password"/>
 				<br/>
 				<br/>
 				<input type="submit" id="submit" name="submit" value="Login"/>
+				<input type="hidden" name="hidden" id="hidden"/>
 			</form>
 		</center>
+
 	</body>
 </html>
 

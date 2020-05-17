@@ -2,6 +2,11 @@ const cool = require('cool-ascii-faces')
 const express = require('express')
 const bodyParser = require('body-parser');
 const path = require('path')
+const helmet = require('helmet')
+//const session = require('express-session')
+const sha3 = require('crypto-js/sha3')
+const csrf = require('csurf')
+
 const PORT = process.env.PORT || 5000
 
 const { Pool } = require('pg');
@@ -11,10 +16,31 @@ const pool = new Pool({
 });
 
 var app = express()
+var parseForm = bodyParser.urlencoded({ extended: false })
+var csrfProtection = csrf({ cookie: true })
 //.use(express.static(path.join(__dirname, 'public')))
 
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(parseForm);
 app.use(bodyParser.json());
+app.use(csrfProtection)
+app.use(helmet())
+app.set('trust proxy', 1) // trust first proxy
+/*app.use(session({
+  name: 'session_0',
+  secret: 'teri ma ki aankh',
+  resave: false,
+  rolling: true,
+  saveUninitialized: false,
+  cookie: { secure: true, maxAge: 60*1000*5 } // age = 5 minutes
+}))*/
+app.use(function (err, req, res, next) {
+  if (err.code !== 'EBADCSRFTOKEN') return next(err)
+ 
+  // handle CSRF token errors here
+  res.status(403)
+  res.send('form tampered with')
+})
+// req.session.cookir.expires = new Date(Date.now() + eta)
 //app.set('view engine', 'ejs');
 
 app
@@ -49,8 +75,8 @@ app
   })
 
 .get('/capstone', (req, res) => res.sendfile('splash.html'))
-.get('/register', (req, res) => res.sendfile('register.html'))
-.get('/login', (req, res) => res.sendfile('login.html'))
+.get('/register', csrfProtection, (req, res) => res.render('register.ejs', { csrfToken: req.csrfToken() }))
+.get('/login', (req, res) => res.sendfile('login.html'))		// TODO max number of attempts
 .get('/send', (req, res) => {
 	user = req.query.user
 	console.log(user)
@@ -63,9 +89,10 @@ app
 	async function f() {
 		try {
 			const client = await pool.connect()
-			query = `SELECT * from Messages WHERE messageid='${messageid}';` 
-			console.log('query = ' + query)
-			message = await client.query(query);
+			//query_text = `SELECT * from Messages WHERE messageid='${messageid}';` 
+			query_text = 'SELECT * from Messages WHERE messageid=messageid;
+			values = [messageid] 
+			message = await client.query(query, values);
 			console.log('message = ' + JSON.stringify(message))
 			message = message.rows[0]
 
@@ -81,16 +108,22 @@ app
 
 .get('/dbdump', (req, res) => res.download('latest.dump'))
 
-	.post('/register', (req, res) => {
+	.post('/register', parseForm, csrfProtection, (req, res) => {
 		console.log(0)
 		var user_name = req.body.username;
 		var password = req.body.password;
 		console.log("Log.UserName = " + user_name + "\nLog.passwd = " + password)
 
+		password_hash = sha3(password)
+
 		async function f(res) {
 		    try {
+			   
 		      const client = await pool.connect()
-		      const result = await client.query("INSERT into user_table values('" + user_name + "', '" + password + "');");
+		      // query = "INSERT into user_table values('" + user_name + "', '" + password_hash + "');"
+		      query = "INSERT into user_table values(user_name, password_hash);"
+		      values = [user_name, password_hash]
+		      const result = await client.query(query, values);
 		      const results = { 'results': (result) ? result : null};
 		      res.send('<h1>Registration successful</h1><br/><br/> <a href="/login">Login</a>');
 		      client.release();
@@ -151,7 +184,8 @@ showTimes = () => {
 
 async function home(res, user_name, password){
 	const client = await pool.connect()
-	query = `SELECT * from user_table where username='${user_name}' and password='${password}';`
+	password_hash = sha3(password)
+	query = `SELECT * from user_table where username='${user_name}' and password='${password_hash}';`
         console.log(query)
 
 	const result = await client.query(query);
