@@ -82,7 +82,7 @@ app
 .get('/capstone', (req, res) => res.sendfile('splash.html'))
 .get('/register', (req, res) => res.sendfile('register.html'))
 .get('/login', (req, res) => res.sendfile('login.html'))		// TODO max number of attempts
-.get('/send', (req, res) => {
+.get('/send', async (req, res) => {
 	//user = req.query.user
         try {
       		const client = await pool.connect()
@@ -98,27 +98,23 @@ app
 	}
 })
 
-.get('/message', (req, res) => {
+.get('/message', async (req, res) => {
 	messageid = req.query.messageid
+	try {
+		const client = await pool.connect()
+		//query_text = `SELECT * from Messages WHERE messageid='${messageid}';` 
+		query_text = 'SELECT * from Messages WHERE messageid=$1;'
+		values = [messageid] 
+		message = await client.query(query, values);
+		console.log('message = ' + JSON.stringify(message))
+		message = message.rows[0]
 
-	async function f() {
-		try {
-			const client = await pool.connect()
-			//query_text = `SELECT * from Messages WHERE messageid='${messageid}';` 
-			query_text = 'SELECT * from Messages WHERE messageid=$1;'
-			values = [messageid] 
-			message = await client.query(query, values);
-			console.log('message = ' + JSON.stringify(message))
-			message = message.rows[0]
-
-			res.render('pages/message', {sender:message.sender, receiver:message.receiver, content:message.message})
-		        client.release();
-		} catch (err) {
-		        console.error(err);
-		        res.send("Error " + err);
-		}
+		res.render('pages/message', {sender:message.sender, receiver:message.receiver, content:message.message})
+		client.release();
+	} catch (err) {
+		console.error(err);
+		res.send("Error " + err);
 	}
-	f()
 })
 
 .get('/dbdump', (req, res) => res.download('latest.dump'))
