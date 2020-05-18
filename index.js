@@ -82,6 +82,7 @@ app
 .get('/capstone', (req, res) => res.sendfile('splash.html'))
 .get('/register', (req, res) => res.sendfile('register.html'))
 .get('/login', (req, res) => res.sendfile('login.html'))		// TODO max number of attempts
+.get('/home', (req, res) => home(req.sessionID))
 .get('/send', async (req, res) => {
 	//user = req.query.user
         try {
@@ -148,40 +149,46 @@ app
 		f(res);
 	})
 
-	.post('/login', (req,res) => {
-		var username=req.body.username;
-		var password=req.body.password;
-		async function f(res) {
-                    try {
-			    await home(req, res, username, password)
-                    } catch (err) {
-			    console.error(err);
-			    res.send("Error " + err);
-                    }
-                }
-                f(res);
+	.post('/login', async (req,res) => {
+	    var username=req.body.username;
+	    var password=req.body.password;
+	    try {
+		const client = await pool.connect()
+
+		password_hash = CryptoJS.SHA3(password)
+		query = 'SELECT * from user_table WHERE username=$1 and password=$2;'
+		values = [username, password_hash.toString(CryptoJS.enc.Hex)]
+
+		const result = await client.query(query, values);
+		console.log(result)
+		user = result.rows[0].username;
+
+		session_query = 'INSERT into sessions(sessionid, username) VALUES ($1, $2);'
+		values = [req.sessionID, user]
+		await client.query(session_query, values);
+		await home(req.sessionID)
+	    } catch (err) {
+	   	console.error(err);
+		res.send("Error " + err);
+	    }
 	})
 
-	.post('/send', (req, res) => {
+	.post('/send', async (req, res) => {
 		sender = req.query.user;
 		receiver = req.body.username;
 		content = req.body.content;
-
-		async function f() {
-		    try {
-		      const client = await pool.connect()
-		      query = `INSERT into Messages values('${sender}', '${receiver}', '${content}', '${parseInt(Math.random()*100)}');`
-		      console.log(query)
-		      const result = await client.query(query);
-		      const results = { 'results': (result) ? result : null};
-		      res.send('<h1>Message sent</h1><br/><br/><a href="/home">Home</a>');
-		      client.release();
-		    } catch (err) {
-		      console.error(err);
-		      res.send("Error " + err);
-		    }
-		}
-		f();
+	        try {
+	   		const client = await pool.connect()
+	      		query = `INSERT into Messages values('${sender}', '${receiver}', '${content}', '${parseInt(Math.random()*100)}');`
+			console.log(query)
+	      		const result = await client.query(query);
+	      		const results = { 'results': (result) ? result : null};
+	      		res.send('<h1>Message sent</h1><br/><br/><a href="/home">Home</a>');
+	      		client.release();
+	    	} catch (err) {
+	      		console.error(err);
+	      		res.send("Error " + err);
+	    	}
 	})
 
 .listen(PORT, () => console.log(`Listening on ${ PORT }`))
@@ -195,38 +202,36 @@ showTimes = () => {
   return result;
 }
 
-async function home(req, res, username, password){
-	const client = await pool.connect()
-	password_hash = CryptoJS.SHA3(password)
-	query = 'SELECT * from user_table WHERE username=$1 and password=$2;'
-	values = [username, password_hash.toString(CryptoJS.enc.Hex)]
+async function home(sessionID){
+	try{
+		const client = await pool.connect()
+		user_query = 'SELECT username FROM sessions WHERE sessionid=$1;'
+		values = [sessionID]
+		user = await client.query(user_query, values)
+		console.log(user)
 
-	const result = await client.query(query, values);
-	console.log(result)
-	user = result.rows[0].username;
+		message_query = 'SELECT * FROM Messages WHERE Receiver=$1;'
+		values = [user]
 
-	session_query = 'INSERT into sessions(sessionid, username) VALUES ($1, $2);'
-	values = [req.sessionID, user]
-	await client.query(session_query, values);
+		message_result = await client.query(message_query, values);
+		messages = message_result.rows;
 
-	message_query = 'SELECT * FROM Messages WHERE Receiver=$1;'
-	values = [user]
+		messages_html = ""
+		for (i=0; i<messages.length; i++) 
+			messages_html += `<a href="/message?messageid=${messages[i].messageid}">Message from ${messages[i].sender}</a>`;
 
-	message_result = await client.query(message_query, values);
-	messages = message_result.rows;
-
-	messages_html = ""
-	for (i=0; i<messages.length; i++) 
-		messages_html += `<a href="/message?messageid=${messages[i].messageid}">Message from ${messages[i].sender}</a>`;
-
-      //const results = { 'results': (result) ? result : null};
-      res.send(`<center><h1>Message Center<h1></center><br/><br/>\
-	      <a href="/send">Send a new message</a><br/><br/>\
-	      <h3>Your messages</h3>\
-	      ${messages_html}`
-      );
-	    console.log(5)
-      client.release();
+	      //const results = { 'results': (result) ? result : null};
+	      res.send(`<center><h1>Message Center<h1></center><br/><br/>\
+		      <a href="/send">Send a new message</a><br/><br/>\
+		      <h3>Your messages</h3>\
+		      ${messages_html}`
+	      );
+		    console.log(5)
+	      client.release();
+	} catch (err) {
+		console.error(err);
+		res.send("Error " + err);
+	}
 }
 
 
