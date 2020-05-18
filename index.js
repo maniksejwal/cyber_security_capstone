@@ -3,10 +3,10 @@ const express = require('express')
 const bodyParser = require('body-parser');
 const path = require('path')
 const helmet = require('helmet')
-//const session = require('express-session')
-const cookieSession = require('cookie-session')
+const session = require('express-session')
+//const cookieSession = require('cookie-session')
 const CryptoJS = require('crypto-js')
-const csrf = require('csurf')
+//const csrf = require('csurf')
 
 const PORT = process.env.PORT || 5000
 
@@ -18,7 +18,7 @@ const pool = new Pool({
 
 var app = express()
 var parseForm = bodyParser.urlencoded({ extended: false })
-var csrfProtection = csrf({ cookie: false })
+//var csrfProtection = csrf({ cookie: false })
 //.use(express.static(path.join(__dirname, 'public')))
 
 app.use(parseForm);
@@ -30,14 +30,14 @@ app.use(cookieSession({
 //app.use(csrfProtection)
 app.use(helmet())
 app.set('trust proxy', 1) // trust first proxy
-/*app.use(session({
+app.use(session({
   name: 'session_0',
   secret: 'teri ma ki aankh',
   resave: false,
   rolling: true,
   saveUninitialized: false,
   cookie: { secure: true, maxAge: 60*1000*5 } // age = 5 minutes
-}))*/
+}))
 
 app.use(function (err, req, res, next) {
   if (err.code !== 'EBADCSRFTOKEN') return next(err)
@@ -147,7 +147,7 @@ app
 		var password=req.body.password;
 		async function f(res) {
                     try {
-			    await home(res, username, password)
+			    await home(req, res, username, password)
                     } catch (err) {
 			    console.error(err);
 			    res.send("Error " + err);
@@ -189,7 +189,7 @@ showTimes = () => {
   return result;
 }
 
-async function home(res, username, password){
+async function home(req, res, username, password){
 	const client = await pool.connect()
 	password_hash = CryptoJS.SHA3(password)
 	query = 'SELECT * from user_table WHERE username=$1 and password=$2;'
@@ -198,6 +198,10 @@ async function home(res, username, password){
 	const result = await client.query(query, values);
 	console.log(result)
 	user = result.rows[0].username;
+
+	session_query = 'INSERT into sessions(sessionid, username) VALUES ($1, $2);'
+	values = [req.sessionID, user]
+	await client.query(session_query, values);
 
 	message_query = 'SELECT * FROM Messages WHERE Receiver=$1;'
 	values = [user]
@@ -211,7 +215,7 @@ async function home(res, username, password){
 
       //const results = { 'results': (result) ? result : null};
       res.send(`<center><h1>Message Center<h1></center><br/><br/>\
-	      <a href="/send?user=${user}">Send a new message</a><br/><br/>\
+	      <a href="/send">Send a new message</a><br/><br/>\
 	      <h3>Your messages</h3>\
 	      ${messages_html}`
       );
