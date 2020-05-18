@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Register</title>
+		<script>
+			function validateForm() {
+			  var x = document.forms["registerForm"]["username"].value;
+			  if (x == "") {
+			    alert("Please provide the username");
+			    return false;
+			  }
+			  var y = document.forms["registerForm"]["password"].value;
+			  if (y == "") {
+			    alert("Please provide a password");
+			    return false;
+			  }
+			}
+		</script> 
+	</head>
+	<body>
+		<center>
+			<h1>Register</h1>
+			<br/>
+			<form name="registerForm" action="/register" onsubmit="return validateForm()"  method="post">
+				<label for="username">Username:</label>
+				<br/>
+				<input type="text" id="username" name="username"/>
+				<br/>
+				<br/>
+				<label for="password">Password:</label>
+				<br/>
+				<input type="password" id="password" name="password"/>
+				<br/>
+				<br/>
+				<input type="submit" id="submit" name="submit"/>
+			</form>
+		</center>
+	</body>
+</html>
