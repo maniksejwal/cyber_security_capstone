@@ -120,6 +120,7 @@ app
 		console.log("Log.UserName = " + user_name + "\nLog.passwd = " + password)
 
 		password_hash = sha3(password)
+		console.log('hash= ' + password_hash)
 
 		async function f(res) {
 		    try {
