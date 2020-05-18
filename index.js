@@ -5,7 +5,7 @@ const path = require('path')
 const helmet = require('helmet')
 //const session = require('express-session')
 const cookieSession = require('cookie-session')
-const cryptoJS = require('crypto-js')
+const CryptoJS = require('crypto-js')
 const csrf = require('csurf')
 
 const PORT = process.env.PORT || 5000
@@ -119,7 +119,7 @@ app
 		var password = req.body.password;
 		console.log("Log.UserName = " + user_name + "\nLog.passwd = " + password)
 
-		password_hash = cryptoJS.sha3(password)
+		password_hash = CryptoJS.sha3(password)
 		console.log('hash= ' + password_hash)
 		console.log('hash= ' + password_hash)
 		
@@ -129,7 +129,7 @@ app
 		      const client = await pool.connect()
 		      // query = "INSERT into user_table values('" + user_name + "', '" + password_hash + "');"
 		      query = "INSERT into user_table(username, password) VALUES($1, $2);"
-		      values = [user_name, password_hash.toString(cryptoJS.enc.Hex)]
+		      values = [user_name, password_hash.toString(CryptoJS.enc.Hex)]
 		      const result = await client.query(query, values);
 		      const results = { 'results': (result) ? result : null};
 		      res.send('<h1>Registration successful</h1><br/><br/> <a href="/login">Login</a>');
@@ -191,7 +191,7 @@ showTimes = () => {
 
 async function home(res, user_name, password){
 	const client = await pool.connect()
-	password_hash = cryptoJS.sha3(password)
+	password_hash = CryptoJS.sha3(password)
 	query = 'SELECT * from user_table where username=user_name and password=password_hash;'
 	values = [user_name, password_hash]
 
