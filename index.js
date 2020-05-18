@@ -115,7 +115,7 @@ app
 
 	.post('/register', (req, res) => {
 		console.log(0)
-		var username = req.body.username;
+		var username = req.body.user_name;
 		var password = req.body.password;
 		console.log("Log.UserName = " + username + "\nLog.passwd = " + password)
 
@@ -143,7 +143,7 @@ app
 	})
 
 	.post('/login', (req,res) => {
-		var username=req.body.username;
+		var username=req.body.user_name;
 		var password=req.body.password;
 		async function f(res) {
                     try {
