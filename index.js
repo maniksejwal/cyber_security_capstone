@@ -192,7 +192,7 @@ showTimes = () => {
 async function home(res, username, password){
 	const client = await pool.connect()
 	password_hash = CryptoJS.SHA3(password)
-	console.log(`${user_name}, ${password_hash}`)
+	console.log(`${username}, ${password_hash}`)
 	query = 'SELECT * from user_table WHERE username=$1 and password=$2;'
 	values = [username, password_hash]
 
