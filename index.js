@@ -117,7 +117,7 @@ app
 		console.log(0)
 		var username = req.body.username;
 		var password = req.body.password;
-		console.log("Log.UserName = " + user_name + "\nLog.passwd = " + password)
+		console.log("Log.UserName = " + username + "\nLog.passwd = " + password)
 
 		password_hash = CryptoJS.SHA3(password)
 		console.log('hash= ' + password_hash)
@@ -193,7 +193,7 @@ async function home(res, username, password){
 	const client = await pool.connect()
 	password_hash = CryptoJS.SHA3(password)
 	query = 'SELECT * from user_table WHERE username=$1 and password=$2;'
-	values = [user_name, password_hash]
+	values = [username, password_hash]
 
 	const result = await client.query(query, values);
 	console.log(result)
