@@ -121,14 +121,15 @@ app
 
 		password_hash = sha3(password)
 		console.log('hash= ' + password_hash)
-
+		console.log('hash= ' + password_hash)
+		
 		async function f(res) {
 		    try {
 			   
 		      const client = await pool.connect()
 		      // query = "INSERT into user_table values('" + user_name + "', '" + password_hash + "');"
 		      query = "INSERT into user_table(username, password) VALUES($1, $2);"
-		      values = [user_name, password_hash]
+		      values = [user_name, password_hash.toString(CryptoJS.enc.Hex)]
 		      const result = await client.query(query, values);
 		      const results = { 'results': (result) ? result : null};
 		      res.send('<h1>Registration successful</h1><br/><br/> <a href="/login">Login</a>');
