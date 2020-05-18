@@ -38,14 +38,6 @@ app.use(session({
   saveUninitialized: false,
   cookie: { secure: true, maxAge: 60*1000*5 } // age = 5 minutes
 }))
-
-app.use(function (err, req, res, next) {
-  if (err.code !== 'EBADCSRFTOKEN') return next(err)
- 
-  // handle CSRF token errors here
-  res.status(403)
-  res.send('form tampered with')
-})
 // req.session.cookir.expires = new Date(Date.now() + eta)
 
 app
@@ -82,7 +74,7 @@ app
 .get('/capstone', (req, res) => res.sendfile('splash.html'))
 .get('/register', (req, res) => res.sendfile('register.html'))
 .get('/login', (req, res) => res.sendfile('login.html'))		// TODO max number of attempts
-.get('/home', (req, res) => home(req.sessionID))
+.get('/home', (req, res) => home(req.sessionID, res))
 .get('/send', async (req, res) => {
 	//user = req.query.user
         try {
@@ -166,7 +158,7 @@ app
 		session_query = 'INSERT into sessions(sessionid, username) VALUES ($1, $2);'
 		values = [req.sessionID, user]
 		await client.query(session_query, values);
-		await home(req.sessionID)
+		await home(req.sessionID, res)
 	    } catch (err) {
 	   	console.error(err);
 		res.send("Error " + err);
@@ -202,7 +194,7 @@ showTimes = () => {
   return result;
 }
 
-async function home(sessionID){
+async function home(sessionID, res){
 	try{
 		const client = await pool.connect()
 		user_query = 'SELECT username FROM sessions WHERE sessionid=$1;'
