@@ -23,10 +23,10 @@ var parseForm = bodyParser.urlencoded({ extended: false })
 
 app.use(parseForm);
 app.use(bodyParser.json());
-app.use(cookieSession({
+/*app.use(cookieSession({
 	name: 'session',
 	keys: ['teri maa', 'ki aankh']
-}))
+}))*/
 //app.use(csrfProtection)
 app.use(helmet())
 app.set('trust proxy', 1) // trust first proxy
@@ -83,9 +83,19 @@ app
 .get('/register', (req, res) => res.sendfile('register.html'))
 .get('/login', (req, res) => res.sendfile('login.html'))		// TODO max number of attempts
 .get('/send', (req, res) => {
-	user = req.query.user
-	console.log(user)
-	res.render('pages/send', {user: user})
+	//user = req.query.user
+        try {
+      		const client = await pool.connect()
+		sessionID = req.sessionID
+		session_query = 'SELECT username FROM sessions WHERE sessionid=$1'
+		values = [sessionID]
+      		const result = await client.query(session_query, values)
+		console.log(user)
+		res.render('pages/send', {user: user})
+	} catch (err) {
+		console.error(err);
+		res.send("Error " + err)
+	}
 })
 
 .get('/message', (req, res) => {
