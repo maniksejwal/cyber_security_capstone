@@ -143,7 +143,7 @@ app
 	})
 
 	.post('/login', (req,res) => {
-		var username=req.body.user_name;
+		var username=req.body.username;
 		var password=req.body.password;
 		async function f(res) {
                     try {
