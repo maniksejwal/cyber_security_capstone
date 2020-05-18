@@ -126,7 +126,7 @@ app
 			   
 		      const client = await pool.connect()
 		      // query = "INSERT into user_table values('" + user_name + "', '" + password_hash + "');"
-		      query = "INSERT into user_table values(username, password);"
+		      query = "INSERT into user_table(username, password) VALUES($1, $2);"
 		      values = [user_name, password_hash]
 		      const result = await client.query(query, values);
 		      const results = { 'results': (result) ? result : null};
