@@ -95,7 +95,7 @@ app
 		try {
 			const client = await pool.connect()
 			//query_text = `SELECT * from Messages WHERE messageid='${messageid}';` 
-			query_text = 'SELECT * from Messages WHERE messageid=messageid;'
+			query_text = 'SELECT * from Messages WHERE messageid=$1;'
 			values = [messageid] 
 			message = await client.query(query, values);
 			console.log('message = ' + JSON.stringify(message))
@@ -115,7 +115,7 @@ app
 
 	.post('/register', (req, res) => {
 		console.log(0)
-		var user_name = req.body.username;
+		var username = req.body.username;
 		var password = req.body.password;
 		console.log("Log.UserName = " + user_name + "\nLog.passwd = " + password)
 
@@ -127,9 +127,9 @@ app
 		    try {
 			   
 		      const client = await pool.connect()
-		      // query = "INSERT into user_table values('" + user_name + "', '" + password_hash + "');"
+		      // query = "INSERT into user_table values('" + username + "', '" + password_hash + "');"
 		      query = "INSERT into user_table(username, password) VALUES($1, $2);"
-		      values = [user_name, password_hash.toString(CryptoJS.enc.Hex)]
+		      values = [username, password_hash.toString(CryptoJS.enc.Hex)]
 		      const result = await client.query(query, values);
 		      const results = { 'results': (result) ? result : null};
 		      res.send('<h1>Registration successful</h1><br/><br/> <a href="/login">Login</a>');
@@ -143,11 +143,11 @@ app
 	})
 
 	.post('/login', (req,res) => {
-		var user_name=req.body.username;
+		var username=req.body.username;
 		var password=req.body.password;
 		async function f(res) {
                     try {
-			    await home(res, user_name, password)
+			    await home(res, username, password)
                     } catch (err) {
 			    console.error(err);
 			    res.send("Error " + err);
@@ -189,17 +189,17 @@ showTimes = () => {
   return result;
 }
 
-async function home(res, user_name, password){
+async function home(res, username, password){
 	const client = await pool.connect()
 	password_hash = CryptoJS.SHA3(password)
-	query = 'SELECT * from user_table where username=user_name and password=password_hash;'
+	query = 'SELECT * from user_table WHERE username=$1 and password=$2;'
 	values = [user_name, password_hash]
 
 	const result = await client.query(query, values);
 	console.log(result)
 	user = result.rows[0].username;
 
-	message_query = 'SELECT * FROM Messages WHERE Receiver=user;'
+	message_query = 'SELECT * FROM Messages WHERE Receiver=$1;'
 	values = [user]
 
 	message_result = await client.query(message_query, values);
