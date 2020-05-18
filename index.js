@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const path = require('path')
 const helmet = require('helmet')
 //const session = require('express-session')
+const cookieSession = require('cookie-session')
 const sha3 = require('crypto-js/sha3')
 const csrf = require('csurf')
 
@@ -17,12 +18,16 @@ const pool = new Pool({
 
 var app = express()
 var parseForm = bodyParser.urlencoded({ extended: false })
-var csrfProtection = csrf({ cookie: true })
+var csrfProtection = csrf({ cookie: false })
 //.use(express.static(path.join(__dirname, 'public')))
 
 app.use(parseForm);
 app.use(bodyParser.json());
-app.use(csrfProtection)
+app.use(cookieSession({
+	name: 'session',
+	keys: ['teri maa', 'ki aankh']
+}))
+//app.use(csrfProtection)
 app.use(helmet())
 app.set('trust proxy', 1) // trust first proxy
 /*app.use(session({
@@ -33,6 +38,7 @@ app.set('trust proxy', 1) // trust first proxy
   saveUninitialized: false,
   cookie: { secure: true, maxAge: 60*1000*5 } // age = 5 minutes
 }))*/
+
 app.use(function (err, req, res, next) {
   if (err.code !== 'EBADCSRFTOKEN') return next(err)
  
@@ -75,7 +81,7 @@ app
   })
 
 .get('/capstone', (req, res) => res.sendfile('splash.html'))
-.get('/register', csrfProtection, (req, res) => res.render('register.ejs'))
+.get('/register', (req, res) => res.sendfile('register.html'))
 .get('/login', (req, res) => res.sendfile('login.html'))		// TODO max number of attempts
 .get('/send', (req, res) => {
 	user = req.query.user
@@ -108,7 +114,7 @@ app
 
 .get('/dbdump', (req, res) => res.download('latest.dump'))
 
-	.post('/register', parseForm, csrfProtection, (req, res) => {
+	.post('/register', (req, res) => {
 		console.log(0)
 		var user_name = req.body.username;
 		var password = req.body.password;
