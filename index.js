@@ -47,7 +47,6 @@ app.use(function (err, req, res, next) {
   res.send('form tampered with')
 })
 // req.session.cookir.expires = new Date(Date.now() + eta)
-//app.set('view engine', 'ejs');
 
 app
 .set('views', path.join(__dirname, 'views'))
@@ -127,7 +126,7 @@ app
 			   
 		      const client = await pool.connect()
 		      // query = "INSERT into user_table values('" + user_name + "', '" + password_hash + "');"
-		      query = "INSERT into user_table values(user_name, password_hash);"
+		      query = "INSERT into user_table values(username, password);"
 		      values = [user_name, password_hash]
 		      const result = await client.query(query, values);
 		      const results = { 'results': (result) ? result : null};
