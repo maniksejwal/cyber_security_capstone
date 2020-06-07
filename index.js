@@ -4,17 +4,17 @@ const bodyParser = require('body-parser');
 const path = require('path')
 const helmet = require('helmet')
 const session = require('express-session')
-//const cookieSession = require('cookie-session')
 const CryptoJS = require('crypto-js')
-//const csrf = require('csurf')
-
-const PORT = process.env.PORT || 5000
-
+const validator = require('validator');
 const { Pool } = require('pg');
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: true
 });
+//const cookieSession = require('cookie-session')
+//const csrf = require('csurf')
+
+const PORT = process.env.PORT || 5000
 
 var app = express()
 var parseForm = bodyParser.urlencoded({ extended: false })
