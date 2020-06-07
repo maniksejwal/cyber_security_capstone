@@ -71,6 +71,10 @@ app
     }
   })
 
+
+// -- Capstone -- //
+
+
 .get('/capstone', (req, res) => res.sendfile('splash.html'))
 .get('/register', (req, res) => res.sendfile('register.html'))
 .get('/login', (req, res) => res.sendfile('login.html'))		// TODO max number of attempts
@@ -169,21 +173,28 @@ app
 		sender = req.query.user;
 		receiver = req.body.username;
 		content = req.body.content;
-	        try {
-	   		const client = await pool.connect()
-	      		query = `INSERT into Messages values('${sender}', '${receiver}', '${content}', '${parseInt(Math.random()*100)}');`
+	  try {
+	  	const client = await pool.connect()
+	   	query = `INSERT into Messages values('${sender}', '${receiver}', '${content}', '${parseInt(Math.random()*100)}');`
 			console.log(query)
-	      		const result = await client.query(query);
-	      		const results = { 'results': (result) ? result : null};
-	      		res.send('<h1>Message sent</h1><br/><br/><a href="/home">Home</a>');
-	      		client.release();
-	    	} catch (err) {
-	      		console.error(err);
-	      		res.send("Error " + err);
-	    	}
+	   	const result = await client.query(query);
+	   	const results = { 'results': (result) ? result : null};
+	   	res.send('<h1>Message sent</h1><br/><br/><a href="/home">Home</a>');
+	   	client.release();
+	  } catch (err) {
+	   	console.error(err);
+	   	res.send("Error " + err);
+	  }
 	})
 
-.listen(PORT, () => console.log(`Listening on ${ PORT }`))
+	.use(function(req, res, next){		// 404
+		res.status(404).send('404 - Invalid URL - ' + req.originalUrl);
+	})
+	.listen(PORT, () => console.log(`Listening on ${ PORT }`))
+
+
+// -- Helpers -- //
+
 
 showTimes = () => {
   let result = ''
