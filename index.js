@@ -146,26 +146,27 @@ app
 	})
 
 	.post('/login', async (req,res) => {
-	    var username=req.body.username;
-	    var password=req.body.password;
-	    try {
-		const client = await pool.connect()
+	  var username=req.body.username;
+	  var password=req.body.password;
+	  try {
+			const client = await pool.connect()
 
-		password_hash = CryptoJS.SHA3(password)
-		query = 'SELECT * from user_table WHERE username=$1 and password=$2;'
-		values = [username, password_hash.toString(CryptoJS.enc.Hex)]
+			password_hash = CryptoJS.SHA3(password)
+			query = 'SELECT * from user_table WHERE username=$1 and password=$2;'
+			values = [username, password_hash.toString(CryptoJS.enc.Hex)]
 
-		const result = await client.query(query, values);
-		console.log(result)
-		user = result.rows[0].username;
+			const result = await client.query(query, values);
+			console.log(result)
+			console.log(result.rowCount)
+			user = result.rows[0].username;
 
-		session_query = 'INSERT into sessions(sessionid, username) VALUES ($1, $2);'
-		values = [req.sessionID, user]
-		await client.query(session_query, values);
-		await home(req.sessionID, res)
-	    } catch (err) {
+			session_query = 'INSERT into sessions(sessionid, username) VALUES ($1, $2);'
+			values = [req.sessionID, user]
+			await client.query(session_query, values);
+			await home(req.sessionID, res)
+	  } catch (err) {
 	   	console.error(err);
-		res.send("Error " + err);
+			res.send("Error " + err);
 	    }
 	})
 
