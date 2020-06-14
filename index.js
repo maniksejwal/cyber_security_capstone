@@ -142,12 +142,9 @@ app
 	})
 
 	.post('/login', async (req,res) => {
-		console.log('login')
-		if (req.session.attempts) req.session.attempts++;
-		else req.session.attempts = 1;
-		console.log('attempts checked')
-		sleep(req.session.attempts);
-		console.log('awake')
+		// TODO
+		// if (req.session.attempts) req.session.attempts++;
+		// else req.session.attempts = 1;
 
 	  var username=req.body.username;
 	  var password=req.body.password;
