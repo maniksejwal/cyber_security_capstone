@@ -146,7 +146,7 @@ app
 		if (req.session.attempts) req.session.attempts++;
 		else req.session.attempts = 1;
 		console.log('attempts checked')
-		sleep(req.session.attempts*1000);
+		sleep(req.session.attempts);
 		console.log('awake')
 
 	  var username=req.body.username;
