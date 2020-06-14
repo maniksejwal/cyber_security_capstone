@@ -7,6 +7,7 @@ const session = require('express-session')
 const CryptoJS = require('crypto-js')
 const validator = require('validator');
 const { Pool } = require('pg');
+const sleep = require('system-sleep');
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: true
@@ -75,25 +76,25 @@ app
 // -- Capstone -- //
 
 
-.get('/capstone', (req, res) => res.sendfile('splash.html'))
-.get('/register', (req, res) => res.sendfile('register.html'))
-.get('/login', (req, res) => res.sendfile('login.html'))		// TODO max number of attempts
-.get('/home', (req, res) => home(req.sessionID, res))
-.get('/send', async (req, res) => {
-	//user = req.query.user
-        try {
-      		const client = await pool.connect()
-		sessionID = req.sessionID
-		session_query = 'SELECT username FROM sessions WHERE sessionid=$1'
-		values = [sessionID]
-      		const result = await client.query(session_query, values)
-		console.log(user)
-		res.render('pages/send', {user: user})
-	} catch (err) {
-		console.error(err);
-		res.send("Error " + err)
-	}
-})
+	.get('/capstone', (req, res) => res.sendfile('splash.html'))
+	.get('/register', (req, res) => res.sendfile('register.html'))
+	.get('/login', (req, res) => res.sendfile('login.html'))		// TODO max number of attempts
+	.get('/home', (req, res) => home(req.sessionID, res))
+	.get('/send', async (req, res) => {
+		//user = req.query.user
+    try {
+      const client = await pool.connect()
+			sessionID = req.sessionID
+			session_query = 'SELECT username FROM sessions WHERE sessionid=$1'
+			values = [sessionID]
+      const result = await client.query(session_query, values)
+			console.log(user)
+			res.render('pages/send', {user: user})
+		} catch (err) {
+			console.error(err);
+			res.send("Error " + err)
+		}
+	})
 
 .get('/message', async (req, res) => {
 	messageid = req.query.messageid
@@ -116,36 +117,35 @@ app
 
 .get('/dbdump', (req, res) => res.download('latest.dump'))
 
-	.post('/register', (req, res) => {
-		console.log(0)
+	.post('/register', async (req, res) => {
 		var username = req.body.username;
 		var password = req.body.password;
-		console.log("Log.UserName = " + username + "\nLog.passwd = " + password)
 
 		password_hash = CryptoJS.SHA3(password)
 		console.log('hash= ' + password_hash)
 		console.log('hash= ' + password_hash)
 		
-		async function f(res) {
-		    try {
-			   
-		      const client = await pool.connect()
-		      // query = "INSERT into user_table values('" + username + "', '" + password_hash + "');"
-		      query = "INSERT into user_table(username, password) VALUES($1, $2);"
-		      values = [username, password_hash.toString(CryptoJS.enc.Hex)]
-		      const result = await client.query(query, values);
-		      const results = { 'results': (result) ? result : null};
-		      res.send('<h1>Registration successful</h1><br/><br/> <a href="/login">Login</a>');
-		      client.release();
-		    } catch (err) {
-		      console.error(err);
-		      res.send("Error " + err);
-		    }
+		try {
+		 
+			const client = await pool.connect()
+			// query = "INSERT into user_table values('" + username + "', '" + password_hash + "');"
+			query = "INSERT into user_table(username, password) VALUES($1, $2);"
+			values = [username, password_hash.toString(CryptoJS.enc.Hex)]
+			const result = await client.query(query, values);
+			const results = { 'results': (result) ? result : null};
+			res.send('<h1>Registration successful</h1><br/><br/> <a href="/login">Login</a>');
+			client.release();
+		} catch (err) {
+			console.error(err);
+			res.send("Error " + err);
 		}
-		f(res);
 	})
 
 	.post('/login', async (req,res) => {
+		if (req.session.attempts) req.session.attempts++;
+		else req.session.attempts = 1;
+		sleep(req.session.attempts*1000);
+
 	  var username=req.body.username;
 	  var password=req.body.password;
 	  try {
@@ -220,7 +220,7 @@ async function home(sessionID, res){
 		user_query = 'SELECT username FROM sessions WHERE sessionid=$1;'
 		values = [sessionID]
 		user = await client.query(user_query, values)
-		console.log(user)
+		//console.log(user)
 
 		message_query = 'SELECT * FROM Messages WHERE Receiver=$1;'
 		values = [user]
