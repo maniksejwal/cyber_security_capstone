@@ -156,8 +156,16 @@ app
 			values = [username, password_hash.toString(CryptoJS.enc.Hex)]
 
 			const result = await client.query(query, values);
-			console.log(result)
-			console.log(result.rowCount)
+			if (result.rowCount === 0){
+	      res.send('<br/><br/><center><h1>Invalid username or password<h1><br/><br/>' + 
+					'<a href="login" class="button">Try again</a>' +
+					'</center>'
+				);
+	      client.release();
+				return;
+			}
+			
+			// login successful
 			user = result.rows[0].username;
 
 			session_query = 'INSERT into sessions(sessionid, username) VALUES ($1, $2);'
