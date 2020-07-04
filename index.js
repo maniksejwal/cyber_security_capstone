@@ -86,9 +86,11 @@ app
     try {
       const client = await pool.connect()
 			sessionID = req.sessionID
+			console.log('sessionID = ' + sessionID)
 			session_query = 'SELECT username FROM sessions WHERE sessionid=$1'
 			values = [sessionID]
-      const user = await client.query(session_query, values)
+      const result = await client.query(session_query, values)
+			user = result.rows[0].username
 			console.log(user)
 			res.render('pages/send', {user : user})
 		} catch (err) {
