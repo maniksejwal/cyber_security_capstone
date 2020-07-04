@@ -37,7 +37,7 @@ app.use(session({
   resave: true,
   rolling: true,
   saveUninitialized: false,
-  cookie: { secure: auto, maxAge: 60*1000*10 } // age = 5 minutes
+  cookie: { secure: true, maxAge: 60*1000*10 } // age = 5 minutes
 }))
 // req.session.cookir.expires = new Date(Date.now() + eta)
 
