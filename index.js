@@ -85,7 +85,7 @@ app
 		//user = req.query.user
     try {
       const client = await pool.connect()
-			sessionID = req.sessionID
+			sessionID = req.session.id
 			console.log('sessionID = ' + sessionID)
 			session_query = 'SELECT username FROM sessions WHERE sessionid=$1'
 			values = [sessionID]
@@ -188,7 +188,7 @@ app
 	  try {
 	  	const client = await pool.connect()
 
-			sessionID = req.sessionID
+			sessionID = req.session.id
 			session_query = 'SELECT username FROM sessions WHERE sessionid=$1'
 			values = [sessionID]
       const sender = await client.query(session_query, values)
@@ -230,7 +230,7 @@ showTimes = () => {
 }
 
 async function home(req, res){
-	sessionID = req.sessionID
+	sessionID = req.session.id
 	console.log('sessionID = ' + sessionID)
 	try{
 		const client = await pool.connect()
