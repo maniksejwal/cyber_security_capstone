@@ -233,7 +233,7 @@ async function home(sessionID, res){
 		user_query = 'SELECT username FROM sessions WHERE sessionid=$1;'
 		values = [sessionID]
 		user = await client.query(user_query, values)
-		//console.log(user)
+		console.log(user)
 
 		message_query = 'SELECT * FROM Messages WHERE Receiver=$1;'
 		values = [user]
