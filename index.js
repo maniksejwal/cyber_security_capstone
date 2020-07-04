@@ -89,7 +89,8 @@ app
 			session_query = 'SELECT username FROM sessions WHERE sessionid=$1'
 			values = [sessionID]
       const user = await client.query(session_query, values)
-			res.render('pages/send')
+			console.log(user)
+			res.render('pages/send', {user : user})
 		} catch (err) {
 			console.error(err);
 			res.send("Error " + err)
@@ -180,21 +181,19 @@ app
 	})
 
 	.post('/send', async (req, res) => {
-		console.log(-1)
 		receiver = req.body.username;
 		content = req.body.content;
 	  try {
 	  	const client = await pool.connect()
-			console.log(0)
 
 			sessionID = req.sessionID
 			session_query = 'SELECT username FROM sessions WHERE sessionid=$1'
 			values = [sessionID]
-			console.log(0.5)
       const sender = await client.query(session_query, values)
 			console.log(1)
 			console.log(sender)
 			console.log(sender.length)
+			console.log(2)
 			console.log(receiver.length)
 			console.log(content.length)
 			
