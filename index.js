@@ -79,7 +79,7 @@ app
 	.get('/capstone', (req, res) => res.sendfile('splash.html'))
 	.get('/register', (req, res) => res.sendfile('register.html'))
 	.get('/login', (req, res) => res.sendfile('login.html'))		// TODO max number of attempts
-	.get('/home', home(req, res))
+	.get('/home', (req, res) => home(req, res))
 // TODO use sessionID to identify the user
 	.get('/send', async (req, res) => {
 		//user = req.query.user
