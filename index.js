@@ -79,7 +79,7 @@ app
 	.get('/capstone', (req, res) => res.sendfile('splash.html'))
 	.get('/register', (req, res) => res.sendfile('register.html'))
 	.get('/login', (req, res) => res.sendfile('login.html'))		// TODO max number of attempts
-	.get('/home', (req, res) => home(req.sessionID, res))
+	.get('/home', home(req, res))
 // TODO use sessionID to identify the user
 	.get('/send', async (req, res) => {
 		//user = req.query.user
@@ -229,7 +229,7 @@ showTimes = () => {
 
 async function home(req, res){
 	sessionID = req.sessionID
-	console.log(sessionID)
+	console.log('sessionID = ' + sessionID)
 	try{
 		const client = await pool.connect()
 		user_query = 'SELECT username FROM sessions WHERE sessionid=$1;'
@@ -249,6 +249,7 @@ async function home(req, res){
 
 	      //const results = { 'results': (result) ? result : null};
 	      res.send(`<center><h1>Message Center<h1></center><br/><br/>\
+					Hi ${user}\
 		      <a href="/send">Send a new message</a><br/><br/>\
 		      <h3>Your messages</h3>\
 		      ${messages_html}`
