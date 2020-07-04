@@ -180,19 +180,28 @@ app
 	})
 
 	.post('/send', async (req, res) => {
+		console.log(-1)
 		receiver = req.body.username;
 		content = req.body.content;
 	  try {
 	  	const client = await pool.connect()
+			console.log(0)
 
 			sessionID = req.sessionID
 			session_query = 'SELECT username FROM sessions WHERE sessionid=$1'
 			values = [sessionID]
+			console.log(0.5)
       const sender = await client.query(session_query, values)
+			console.log(1)
+			console.log(sender)
+			console.log(sender.length)
+			console.log(receiver.length)
+			console.log(content.length)
 			
 	   	query = 'INSERT into Messages values($1, $2, $3, $4);'
 			values = [sender, receiver, content, parseInt(Math.random()*100)]
 	   	const result = await client.query(query, values);
+			console.log(2)
 	   	res.send('<h1>Message sent</h1><br/><br/><a href="/home">Home</a>');
 	   	client.release();
 	  } catch (err) {
