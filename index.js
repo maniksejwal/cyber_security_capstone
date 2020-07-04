@@ -173,7 +173,7 @@ app
 			session_query = 'INSERT into sessions(sessionid, username) VALUES ($1, $2);'
 			values = [req.sessionID, user]
 			await client.query(session_query, values);
-			await home(req.sessionID, res)
+			await home(req, res)
 	  } catch (err) {
 	   	console.error(err);
 			res.send("Error " + err);
@@ -227,7 +227,9 @@ showTimes = () => {
   return result;
 }
 
-async function home(sessionID, res){
+async function home(req, res){
+	sessionID = req.sessionID
+	console.log(sessionID)
 	try{
 		const client = await pool.connect()
 		user_query = 'SELECT username FROM sessions WHERE sessionid=$1;'
