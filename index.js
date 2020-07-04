@@ -34,10 +34,10 @@ app.set('trust proxy', 1) // trust first proxy
 app.use(session({
   name: 'session_0',
   secret: 'teri ma ki aankh',
-  resave: false,
+  resave: true,
   rolling: true,
   saveUninitialized: false,
-  cookie: { secure: true, maxAge: 60*1000*5 } // age = 5 minutes
+  cookie: { secure: auto, maxAge: 60*1000*10 } // age = 5 minutes
 }))
 // req.session.cookir.expires = new Date(Date.now() + eta)
 
