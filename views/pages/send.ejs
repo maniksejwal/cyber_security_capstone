@@ -2,6 +2,7 @@
 	<html>
 		<head>
 		<title>Send message</title>
+		<!--
 		<script>
 			function validateForm() {
 			  var x = document.forms["newMessageForm"]["username"].value;
@@ -15,22 +16,22 @@
 			    return false;
 			  }
 			}
-
 		</script>
+		-->
 	</head>
 	<body>
 		<center>
 			<h1>SEND</h1>
 			<br/>
-			<form name="newMessageForm" action="/send?user=<%=user%>"  onsubmit="return validateForm()" method="POST">
+			<form name="newMessageForm" action="/send"  onsubmit="return validateForm()" method="POST">
 				<label for="username">To (username):</label>
 				<br/>
-				<input type="text" id="username" name="username"/>
+				<input type="text" id="username" name="username" required minlength="1" maxlength="50" pattern="[0-9A-Za-z.,!@#$%^&*_=+?/]*"/>
 				<br/>
 				<br/>
-				<label for="password">Content:</label>
+				<label for="content">Content:</label>
 				<br/>
-				<input type="text" id="content" name="content"/>
+				<input type="text" id="content" name="content" required minlength="1" maxlength="50" pattern="[0-9A-Za-z.,!@#$%^&*_=+? /]*"/>
 				<br/>
 				<br/>
 				<input type="submit" id="submit" name="submit" value="Send"/>

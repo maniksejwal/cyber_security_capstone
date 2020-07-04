@@ -80,6 +80,7 @@ app
 	.get('/register', (req, res) => res.sendfile('register.html'))
 	.get('/login', (req, res) => res.sendfile('login.html'))		// TODO max number of attempts
 	.get('/home', (req, res) => home(req.sessionID, res))
+// TODO use sessionID to identify the user
 	.get('/send', async (req, res) => {
 		//user = req.query.user
     try {
@@ -87,9 +88,8 @@ app
 			sessionID = req.sessionID
 			session_query = 'SELECT username FROM sessions WHERE sessionid=$1'
 			values = [sessionID]
-      const result = await client.query(session_query, values)
-			console.log(user)
-			res.render('pages/send', {user: user})
+      const user = await client.query(session_query, values)
+			res.render('pages/send')
 		} catch (err) {
 			console.error(err);
 			res.send("Error " + err)
@@ -157,6 +157,7 @@ app
 
 			const result = await client.query(query, values);
 			if (result.rowCount === 0){
+				// TODO : if username exists, increment attempt count
 	      res.send('<br/><br/><center><h1>Invalid username or password<h1><br/><br/>' + 
 					'<a href="login" class="button">Try again</a>' +
 					'</center>'
@@ -179,15 +180,19 @@ app
 	})
 
 	.post('/send', async (req, res) => {
-		sender = req.query.user;
 		receiver = req.body.username;
 		content = req.body.content;
 	  try {
 	  	const client = await pool.connect()
-	   	query = `INSERT into Messages values('${sender}', '${receiver}', '${content}', '${parseInt(Math.random()*100)}');`
-			console.log(query)
-	   	const result = await client.query(query);
-	   	const results = { 'results': (result) ? result : null};
+
+			sessionID = req.sessionID
+			session_query = 'SELECT username FROM sessions WHERE sessionid=$1'
+			values = [sessionID]
+      const sender = await client.query(session_query, values)
+			
+	   	query = 'INSERT into Messages values($1, $2, $3, $4);'
+			values = [sender, receiver, content, parseInt(Math.random()*100)]
+	   	const result = await client.query(query, values);
 	   	res.send('<h1>Message sent</h1><br/><br/><a href="/home">Home</a>');
 	   	client.release();
 	  } catch (err) {
