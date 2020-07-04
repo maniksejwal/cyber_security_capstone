@@ -173,7 +173,7 @@ app
 			user = result.rows[0].username;
 
 			session_query = 'INSERT into sessions(sessionid, username) VALUES ($1, $2);'
-			values = [req.sessionID, user]
+			values = [req.session.id, user]
 			await client.query(session_query, values);
 			await home(req, res)
 	  } catch (err) {
@@ -236,7 +236,8 @@ async function home(req, res){
 		const client = await pool.connect()
 		user_query = 'SELECT username FROM sessions WHERE sessionid=$1;'
 		values = [sessionID]
-		user = await client.query(user_query, values)
+		result = await client.query(user_query, values)
+		user = result.rows[0].username
 		console.log(user)
 
 		message_query = 'SELECT * FROM Messages WHERE Receiver=$1;'
