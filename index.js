@@ -90,6 +90,7 @@ app
 			session_query = 'SELECT username FROM sessions WHERE sessionid=$1'
 			values = [sessionID]
       const result = await client.query(session_query, values)
+			console.log(result)
 			user = result.rows[0].username
 			console.log(user)
 			res.render('pages/send')//, {user : user})
