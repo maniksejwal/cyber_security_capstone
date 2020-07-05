@@ -186,16 +186,19 @@ app
 	})
 
 	.post('/send', async (req, res) => {
+		console.log('post seng')
+		sessionID = req.session.id
+		console.log('send sessionID = ' + sessionID)
 		receiver = req.body.username;
 		content = req.body.content;
+		console.log('send : received message data')
 	  try {
 	  	const client = await pool.connect()
 
-			sessionID = req.session.id
-			console.log('send sessionID = ' + sessionID)
 			session_query = 'SELECT username FROM sessions WHERE sessionid=$1'
 			values = [sessionID]
-      const sender = await client.query(session_query, values)
+      const result = await client.query(session_query, values)
+			sender = result.rows[0].username
 			console.log('send 1')
 			console.log(sender)
 			console.log(sender.length)
@@ -262,7 +265,7 @@ async function home(req, res){
 		      <h3>Your messages</h3>\
 		      ${messages_html}`
 	      );
-		    console.log(5)
+		    console.log('home 5')
 	      client.release();
 	} catch (err) {
 		console.error(err);
