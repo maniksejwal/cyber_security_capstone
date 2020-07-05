@@ -90,9 +90,7 @@ app
 			session_query = 'SELECT username FROM sessions WHERE sessionid=$1'
 			values = [sessionID]
       const result = await client.query(session_query, values)
-			console.log(result)
 			user = result.rows[0].username
-			console.log(user)
 			res.render('pages/send')
 		} catch (err) {
 			console.error(err);
@@ -240,6 +238,7 @@ async function home(req, res){
 		values = [sessionID]
 		result = await client.query(user_query, values)
 		console.log(result)
+		if (result.rows.length===0) res.send('invaid session')
 		user = result.rows[0].username
 		console.log(user)
 
