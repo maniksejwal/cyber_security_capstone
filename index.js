@@ -82,6 +82,7 @@ app
 	.get('/home', (req, res) => home(req, res))
 // TODO use sessionID to identify the user
 	.get('/send', async (req, res) => {
+		console.log('get send')
 		//user = req.query.user
     try {
       const client = await pool.connect()
@@ -172,6 +173,7 @@ app
 			
 			// login successful
 			user = result.rows[0].username;
+			req.session.views = true
 
 			session_query = 'INSERT into sessions(sessionid, username) VALUES ($1, $2);'
 			values = [req.session.id, user]
