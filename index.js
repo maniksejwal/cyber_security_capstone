@@ -92,7 +92,7 @@ app
       const result = await client.query(session_query, values)
 			user = result.rows[0].username
 			console.log(user)
-			res.render('pages/send', {user : user})
+			res.render('pages/send')//, {user : user})
 		} catch (err) {
 			console.error(err);
 			res.send("Error " + err)
@@ -189,6 +189,7 @@ app
 	  	const client = await pool.connect()
 
 			sessionID = req.session.id
+			console.log('sessionID = ' + sessionID)
 			session_query = 'SELECT username FROM sessions WHERE sessionid=$1'
 			values = [sessionID]
       const sender = await client.query(session_query, values)
@@ -252,7 +253,7 @@ async function home(req, res){
 
 	      //const results = { 'results': (result) ? result : null};
 	      res.send(`<center><h1>Message Center<h1></center><br/><br/>\
-					Hi ${user}\
+					Hi ${user}<br/><br/>\
 		      <a href="/send">Send a new message</a><br/><br/>\
 		      <h3>Your messages</h3>\
 		      ${messages_html}`
