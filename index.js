@@ -173,7 +173,7 @@ app
 			
 			// login successful
 			user = result.rows[0].username;
-			req.session.views = true
+			//req.session.views = true
 
 			session_query = 'INSERT into sessions(sessionid, username) VALUES ($1, $2);'
 			values = [req.session.id, user]
@@ -197,7 +197,7 @@ app
 
 			session_query = 'SELECT username FROM sessions WHERE sessionid=$1'
 			values = [sessionID]
-      const result = await client.query(session_query, values)
+      result = await client.query(session_query, values)
 			sender = result.rows[0].username
 			console.log('send 1')
 			console.log(sender)
@@ -208,7 +208,7 @@ app
 			
 	   	query = 'INSERT into Messages values($1, $2, $3, $4);'
 			values = [sender, receiver, content, parseInt(Math.random()*100)]
-	   	const result = await client.query(query, values);
+	   	result = await client.query(query, values);
 			console.log('send 3')
 	   	res.send('<h1>Message sent</h1><br/><br/><a href="/home">Home</a>');
 	   	client.release();
