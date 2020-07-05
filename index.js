@@ -1,3 +1,4 @@
+// TODO Backend validation
 const cool = require('cool-ascii-faces')
 const express = require('express')
 const bodyParser = require('body-parser');
@@ -99,26 +100,26 @@ app
 		}
 	})
 
-.get('/message', async (req, res) => {
-	console.log('get message')
-	messageid = req.query.messageid
-	try {
-		const client = await pool.connect()
-		query_text = 'SELECT * from Messages WHERE messageid=$1;'
-		values = [messageid] 
-		result = await client.query(query, values);
-		console.log(result)
-		message = result.rows[0]
+	.get('/message', async (req, res) => {
+		console.log('get message')
+		messageid = req.query.messageid
+		try {
+			const client = await pool.connect()
+			query_text = 'SELECT * from Messages WHERE messageid=$1;'
+			values = [messageid] 
+			result = await client.query(query_text, values);
+			console.log(result)
+			message = result.rows[0]
 
-		res.render('pages/message', {sender:message.sender, receiver:message.receiver, content:message.message})
-		client.release();
-	} catch (err) {
-		console.error(err);
-		res.send("Error " + err);
-	}
-})
+			res.render('pages/message', {sender:message.sender, receiver:message.receiver, content:message.message})
+			client.release();
+		} catch (err) {
+			console.error(err);
+			res.send("Error " + err);
+		}
+	})
 
-.get('/dbdump', (req, res) => res.download('latest.dump'))
+	.get('/dbdump', (req, res) => res.download('latest.dump'))
 
 	.post('/register', async (req, res) => {
 		var username = req.body.username;
@@ -198,11 +199,6 @@ app
       result = await client.query(session_query, values)
 			sender = result.rows[0].username
 			console.log('send 1')
-			console.log(sender)
-			console.log(sender.length)
-			console.log('send 2')
-			console.log(receiver.length)
-			console.log(content.length)
 			
 	   	query = 'INSERT into Messages values($1, $2, $3, $4);'
 			values = [sender, receiver, content, parseInt(Math.random()*100)]
@@ -235,6 +231,7 @@ showTimes = () => {
 }
 
 async function home(req, res){
+	// TODO end session and session doesn't exist
 	sessionID = req.session.id
 	console.log('home sessionID = ' + sessionID)
 	try{
@@ -251,7 +248,7 @@ async function home(req, res){
 
 		message_result = await client.query(message_query, values);
 		messages = message_result.rows;
-
+		// TODO front end validation
 		messages_html = ""
 		for (i=0; i<messages.length; i++) 
 			messages_html += `<a href="/message?messageid=${messages[i].messageid}">Message from ${messages[i].sender}</a>`;
