@@ -80,10 +80,8 @@ app
 	.get('/register', (req, res) => res.sendfile('register.html'))
 	.get('/login', (req, res) => res.sendfile('login.html'))		// TODO max number of attempts
 	.get('/home', (req, res) => home(req, res))
-// TODO use sessionID to identify the user
 	.get('/send', async (req, res) => {
 		console.log('get send')
-		//user = req.query.user
     try {
       const client = await pool.connect()
 			sessionID = req.session.id
@@ -94,7 +92,7 @@ app
 			console.log(result)
 			user = result.rows[0].username
 			console.log(user)
-			res.render('pages/send')//, {user : user})
+			res.render('pages/send')
 		} catch (err) {
 			console.error(err);
 			res.send("Error " + err)
@@ -102,15 +100,15 @@ app
 	})
 
 .get('/message', async (req, res) => {
+	console.log('get message')
 	messageid = req.query.messageid
 	try {
 		const client = await pool.connect()
-		//query_text = `SELECT * from Messages WHERE messageid='${messageid}';` 
 		query_text = 'SELECT * from Messages WHERE messageid=$1;'
 		values = [messageid] 
-		message = await client.query(query, values);
-		console.log('message = ' + JSON.stringify(message))
-		message = message.rows[0]
+		result = await client.query(query, values);
+		console.log(result)
+		message = result.rows[0]
 
 		res.render('pages/message', {sender:message.sender, receiver:message.receiver, content:message.message})
 		client.release();
