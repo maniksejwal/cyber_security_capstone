@@ -1,5 +1,6 @@
 // TODO Backend validation
-// invalid session when home is clicked
+// TODO invalid session 
+// TODO end session
 const cool = require('cool-ascii-faces')
 const express = require('express')
 const bodyParser = require('body-parser');
@@ -124,14 +125,19 @@ app
 		var username = req.body.username;
 		var password = req.body.password;
 
+		if (!validate(6, 50, "[0-9A-Za-z.,!@#$%^&*_=+?]*", username)){
+			res.send(invalid_input())
+			client.release();
+		} 
+		if (!validate(6, 50, "[0-9A-Za-z.,!@#$%^&*_=+?]*", password)){
+			res.send(invalid_input())
+			client.release();
+		} 
+
 		password_hash = CryptoJS.SHA3(password)
-		console.log('hash= ' + password_hash)
-		console.log('hash= ' + password_hash)
 		
 		try {
-		 
 			const client = await pool.connect()
-			// query = "INSERT into user_table values('" + username + "', '" + password_hash + "');"
 			query = "INSERT into user_table(username, password) VALUES($1, $2);"
 			values = [username, password_hash.toString(CryptoJS.enc.Hex)]
 			const result = await client.query(query, values);
@@ -151,6 +157,16 @@ app
 
 	  var username=req.body.username;
 	  var password=req.body.password;
+
+		if (!validate(6, 50, "[0-9A-Za-z.,!@#$%^&*_=+?]*", username)){
+			res.send(invalid_input())
+			client.release();
+		} 
+		if (!validate(6, 50, "[0-9A-Za-z.,!@#$%^&*_=+?]*", password)){
+			res.send(invalid_input())
+			client.release();
+		} 
+
 	  try {
 			const client = await pool.connect()
 
@@ -184,12 +200,19 @@ app
 	})
 
 	.post('/send', async (req, res) => {
-		console.log('post send')
 		sessionID = req.session.id
-		console.log('send sessionID = ' + sessionID)
 		receiver = req.body.username;
 		content = req.body.content;
-		console.log('send : received message data')
+
+		if (!validate(6, 50, "[0-9A-Za-z.,!@#$%^&*_=+?]*", username)){
+			res.send(invalid_input())
+			client.release();
+		} 
+		if (!validate(1, 50, "[0-9A-Za-z.,!@#$%^&*_=+?/ ]*", content)){
+			res.send(invalid_input())
+			client.release();
+		} 
+
 	  try {
 	  	const client = await pool.connect()
 
@@ -198,15 +221,7 @@ app
 			console.log('receiver in database = ')
 			console.log(receiver_exists_result)
 			if (receiver_exists_result.rows.length !== 1) {
-				res.send(`
-					INVALID USERNAME
-					<button onclick="goBack()">Go Back</button>
-					<script>
-						function goBack() {
-							window.history.back();
-						}
-					</script>`
-				)
+				res.send(invalid_input())
 				client.release();
 				return
 			}
@@ -248,7 +263,6 @@ showTimes = () => {
 }
 
 async function home(req, res){
-	// TODO end session
 	sessionID = req.session.id
 	console.log('home sessionID = ' + sessionID)
 	try{
@@ -285,7 +299,24 @@ async function home(req, res){
 	}
 }
 
+// register, login, send
+function validate(minlength, maxlength, regex, value){
+	if (value.length < minlength) return false;
+	if (value.length > maxlength) return false;
+	if (!regex.test(value)) return false;
+	return true;
+}
 
+function invalid_input(){
+	return `INVALID INPUT
+					<button onclick="goBack()">Go Back</button>
+					<script>
+						function goBack() {
+							window.history.back();
+						}
+					</script>`
+}
+	
 //app.listen(3000,function(){
 // console.log("Started on PORT 3000");
 //})

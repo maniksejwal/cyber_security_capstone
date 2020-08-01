@@ -26,12 +26,12 @@
 			<form name="newMessageForm" action="/send"  onsubmit="return validateForm()" method="POST">
 				<label for="username">To (username):</label>
 				<br/>
-				<input type="text" id="username" name="username" required minlength="1" maxlength="50" pattern="[0-9A-Za-z.,!@#$%^&*_=+?/]*"/>
+				<input type="text" id="username" name="username" required minlength="6" maxlength="50" pattern="[0-9A-Za-z.,!@#$%^&*_=+?]*"/>
 				<br/>
 				<br/>
 				<label for="content">Content:</label>
 				<br/>
-				<input type="text" id="content" name="content" required minlength="1" maxlength="50" pattern="[0-9A-Za-z.,!@#$%^&*_=+? /]*"/>
+				<input type="text" id="content" name="content" required minlength="1" maxlength="50" pattern="[0-9A-Za-z.,!@#$%^&*_=+?/ ]*"/>
 				<br/>
 				<br/>
 				<input type="submit" id="submit" name="submit" value="Send"/>
