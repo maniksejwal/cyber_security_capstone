@@ -1,4 +1,5 @@
 // TODO Backend validation
+// invalid session when home is clicked
 const cool = require('cool-ascii-faces')
 const express = require('express')
 const bodyParser = require('body-parser');
@@ -196,8 +197,19 @@ app
 			receiver_exists_result = await client.query(receiver_exists_query, [receiver])
 			console.log('receiver in database = ')
 			console.log(receiver_exists_result)
-			if (receiver_exists_result.rows.length === 1) console.log('length = 1')
-			else console.log('length = 0')
+			if (receiver_exists_result.rows.length !== 1) {
+				res.send(`
+					INVALID USERNAME
+					<button onclick="goBack()">Go Back</button>
+					<script>
+						function goBack() {
+							window.history.back();
+						}
+					</script>`
+				)
+				client.release();
+				return
+			}
 
 			session_query = 'SELECT username FROM sessions WHERE sessionid=$1'
 			values = [sessionID]
