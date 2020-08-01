@@ -183,7 +183,7 @@ app
 	})
 
 	.post('/send', async (req, res) => {
-		console.log('post seng')
+		console.log('post send')
 		sessionID = req.session.id
 		console.log('send sessionID = ' + sessionID)
 		receiver = req.body.username;
@@ -191,6 +191,10 @@ app
 		console.log('send : received message data')
 	  try {
 	  	const client = await pool.connect()
+
+			receiver_exists_query = 'SELECT username FROM user_table'
+			receiver_exists_result = await client.query(receiver_exists_query, receiver)
+			console.log('receiver in database = ' + receiver_exists.rows)
 
 			session_query = 'SELECT username FROM sessions WHERE sessionid=$1'
 			values = [sessionID]
@@ -229,7 +233,7 @@ showTimes = () => {
 }
 
 async function home(req, res){
-	// TODO end session and session doesn't exist
+	// TODO end session
 	sessionID = req.session.id
 	console.log('home sessionID = ' + sessionID)
 	try{
@@ -247,7 +251,6 @@ async function home(req, res){
 
 		message_result = await client.query(message_query, values);
 		messages = message_result.rows;
-		// TODO front end validation
 		messages_html = ""
 		for (i=0; i<messages.length; i++) 
 			messages_html += `<a href="/message?messageid=${messages[i].messageid}">Message from ${messages[i].sender}</a>`;
