@@ -192,9 +192,11 @@ app
 	  try {
 	  	const client = await pool.connect()
 
-			receiver_exists_query = 'SELECT username FROM user_table'
+			receiver_exists_query = 'SELECT username FROM user_table WHERE username=$1'
 			receiver_exists_result = await client.query(receiver_exists_query, [receiver])
 			console.log('receiver in database = ' + receiver_exists.rows)
+			if (receiver_exists_result.rows.length === 1) console.log('length = 1')
+			else console.log('length = 0')
 
 			session_query = 'SELECT username FROM sessions WHERE sessionid=$1'
 			values = [sessionID]
