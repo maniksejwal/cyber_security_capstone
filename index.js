@@ -125,11 +125,11 @@ app
 		var username = req.body.username;
 		var password = req.body.password;
 
-		if (!validate(6, 50, "[0-9A-Za-z.,!@#$%^&*_=+?]*", username)){
+		if (!validate(6, 50, /[0-9A-Za-z.,!@#$%^&*_=+?]*/, username)){
 			res.send(invalid_input())
 			client.release();
 		} 
-		if (!validate(6, 50, "[0-9A-Za-z.,!@#$%^&*_=+?]*", password)){
+		if (!validate(6, 50, /[0-9A-Za-z.,!@#$%^&*_=+?]*/, password)){
 			res.send(invalid_input())
 			client.release();
 		} 
@@ -158,11 +158,11 @@ app
 	  var username=req.body.username;
 	  var password=req.body.password;
 
-		if (!validate(6, 50, "[0-9A-Za-z.,!@#$%^&*_=+?]*", username)){
+		if (!validate(6, 50, /[0-9A-Za-z.,!@#$%^&*_=+?]*/, username)){
 			res.send(invalid_input())
 			client.release();
 		} 
-		if (!validate(6, 50, "[0-9A-Za-z.,!@#$%^&*_=+?]*", password)){
+		if (!validate(6, 50, /[0-9A-Za-z.,!@#$%^&*_=+?]*/, password)){
 			res.send(invalid_input())
 			client.release();
 		} 
@@ -204,11 +204,11 @@ app
 		receiver = req.body.username;
 		content = req.body.content;
 
-		if (!validate(6, 50, "[0-9A-Za-z.,!@#$%^&*_=+?]*", username)){
+		if (!validate(6, 50, /[0-9A-Za-z.,!@#$%^&*_=+?]*/, username)){
 			res.send(invalid_input())
 			client.release();
 		} 
-		if (!validate(1, 50, "[0-9A-Za-z.,!@#$%^&*_=+?/ ]*", content)){
+		if (!validate(1, 50, /[0-9A-Za-z.,!@#$%^&*_=+?\/ ]*/, content)){
 			res.send(invalid_input())
 			client.release();
 		} 
